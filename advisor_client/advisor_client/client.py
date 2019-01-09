@@ -17,7 +17,7 @@ class AdvisorClient(object):
       self.endpoint = os.environ.get("ADVISOR_ENDPOINT")
 
     else:
-      self.endpoint = "http://0.0.0.0:8000"
+      self.endpoint = "http://127.0.0.1:8000"
 
   def create_study(self,
                    study_name,

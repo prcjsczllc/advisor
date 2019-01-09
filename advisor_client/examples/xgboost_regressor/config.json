@@ -3,7 +3,7 @@
   "algorithm": "RandomSearch",
   "trialNumber": 3,
   "concurrency": 1,
-  "path": "~/code/advisor/advisor_client/examples/xgboost_regressor/",
+  "path": "/home/licliu/advisor/advisor_client/examples/xgboost_regressor/",
   "command": "./allstate_insure_regressor.py",
   "search_space": {
       "goal": "MINIMIZE",

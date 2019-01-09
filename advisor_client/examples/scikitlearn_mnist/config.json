@@ -1,13 +1,13 @@
 {
-  "name": "scikitlearn1",
-  "algorithm": "RandomSearch",
-  "trialNumber": 3,
+  "name": "scikitlearn2",
+  "algorithm": "BayesianOptimization",
+  "trialNumber": 30,
   "concurrency": 1,
-  "path": "~/code/advisor/advisor_client/examples/scikitlearn_mnist/",
+  "path": "/home/licliu/advisor/advisor_client/examples/scikitlearn_mnist/",
   "command": "./mnist_classifier.py",
   "search_space": {
     "goal": "MINIMIZE",
-    "randomInitTrials": 1,
+    "randomInitTrials": 5,
     "maxTrials": 5,
     "maxParallelTrials": 1,
     "params": [
