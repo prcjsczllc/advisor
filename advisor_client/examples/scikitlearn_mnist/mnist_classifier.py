@@ -4,9 +4,9 @@ import argparse
 from sklearn import datasets, svm, metrics
 
 parser = argparse.ArgumentParser()
-parser.add_argument("-gamma", type=float, default=0.001)
+parser.add_argument("-Propagation", type=str, default="sigmoid")
+parser.add_argument("-numTrainEpochs", type=float, default=100)
 parser.add_argument("-C", type=float, default=0.5)
-parser.add_argument("-kernel", type=str, default="sigmoid")
 parser.add_argument("-coef0", type=float, default=0.1)
 args = parser.parse_args()
 

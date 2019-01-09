@@ -1,0 +1,19 @@
+{
+  "name": "shifu_cam",
+  "algorithm": "BayesianOptimization",
+  "trialNumber": 10,
+  "path": "./advisor_client/examples/shifu/",
+  "command": "./shifu.py",
+  "search_space": {
+      "goal": "MINIMIZE",
+      "randomInitTrials":5,
+      "params": [
+          {
+              "parameterName": "x",
+              "type": "DOUBLE",
+              "minValue": -10.0,
+              "maxValue": 10.0
+          }
+      ]
+  }
+}
