@@ -15,7 +15,8 @@ args = parser.parse_args()
 def main():
 
     # get path
-    shifuPath = "./advisor_client/examples/shifu/autoMLTest"
+    currentPath = os.getcwd()
+    shifuPath = currentPath + "./advisor_client/examples/shifu/autoMLTest"
 
     # Change model config
     with open(shifuPath + "/ModelConfig.json","r+") as modelConfigFile:
