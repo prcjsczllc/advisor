@@ -31,7 +31,7 @@ def main():
         json.dump(modelConfig,t,indent=2,sort_keys=True)
 
     # Compute or learning
-    subprocess.check_call(["cd " + shifuPath + "/autoMLTest" + "&& bash shifu train && > train.log"],shell=True)
+    subprocess.check_call(["cd " + shifuPath + "&& bash shifu train && > train.log"],shell=True)
 
     # Output the metrics
     logFileDir =  shifuPath + "/train.log"
