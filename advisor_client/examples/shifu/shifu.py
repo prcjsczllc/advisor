@@ -19,23 +19,22 @@ def main():
     # ActivationFunc = args.ActivationFunc
 
     # get path
-    parentPath = os.getcwd()
-    shifuPath = parentPath + "/advisor_client/examples/shifu/autoMLTest"
+    shifuPath = "/home/licliu/advisor/advisor_client/examples/shifu/autoMLTest"
 
     # Change model config
-    with open("./ModelConfig.json","r+") as modelConfigFile:
+    with open(shifuPath + "/ModelConfig.json","r+") as modelConfigFile:
         modelConfig = json.loads(modelConfigFile.read())
         for arg, value in vars(args).items():
             modelConfig["train"]["params"][arg] = [value]
 
-    with open("./ModelConfig.json", "wt") as t:
+    with open(shifuPath + "/ModelConfig.json", "wt") as t:
         json.dump(modelConfig,t,indent=2,sort_keys=True)
 
     # Compute or learning
-    subprocess.check_call(["cd " + "./autoMLTest" + "&& bash shifu train && > train.log"],shell=True)
+    subprocess.check_call(["cd " + shifuPath + "/autoMLTest" + "&& bash shifu train && > train.log"],shell=True)
 
     # Output the metrics
-    logFileDir =  + "./train.log"
+    logFileDir =  shifuPath + "/train.log"
     lines = [line.rsplit(' Validation Error: ')[1][:8] for line in open(logFileDir) if "Epoch #" in line and "Train Error:" in line and "Validation Error:" in line]
     validationError = min(lines)
 
