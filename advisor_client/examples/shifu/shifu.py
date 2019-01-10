@@ -13,13 +13,9 @@ args = parser.parse_args()
 
 
 def main():
-    # Read parameters
-    # LearningRate = args.LearningRate
-    # NumHiddenNodes = args.NumHiddenNodes
-    # ActivationFunc = args.ActivationFunc
 
     # get path
-    shifuPath = "/home/licliu/advisor/advisor_client/examples/shifu/autoMLTest"
+    shifuPath = "./advisor_client/examples/shifu/autoMLTest"
 
     # Change model config
     with open(shifuPath + "/ModelConfig.json","r+") as modelConfigFile:
