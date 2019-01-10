@@ -1,5 +1,5 @@
 {
-  "name": "globalTest",
+  "name": "h2OTest",
   "algorithm": "BayesianOptimization",
   "trialNumber": 30,
   "concurrency": 1,
