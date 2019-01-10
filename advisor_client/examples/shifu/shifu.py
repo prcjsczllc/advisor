@@ -7,7 +7,7 @@ import os
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-LearningRate", type=float, default=0.1)
-parser.add_argument("-NumHiddenNodes", type=float, default=10)
+parser.add_argument("-NumHiddenNodes", type=int, default=10)
 parser.add_argument("-ActivationFunc", type=str, default="Tanh")
 args = parser.parse_args()
 
