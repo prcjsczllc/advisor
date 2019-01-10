@@ -1,0 +1,117 @@
+{
+  "basic": {
+    "author": "licliu",
+    "customPaths": {},
+    "description": "Created at 2019-01-09 19:30:15",
+    "name": "autoMLTest",
+    "postTrainOn": false,
+    "runMode": "LOCAL",
+    "version": "0.12.0"
+  },
+  "dataSet": {
+    "categoricalColumnNameFile": "columns/categorical.column.names",
+    "dataDelimiter": "|",
+    "dataPath": "/home/licliu/shifu/shifu-0.12.1-SNAPSHOT/example/cancer-judgement/DataStore/DataSet1",
+    "filterExpressions": "",
+    "headerDelimiter": "|",
+    "headerPath": "/home/licliu/shifu/shifu-0.12.1-SNAPSHOT/example/cancer-judgement/DataStore/DataSet1/.pig_header",
+    "metaColumnNameFile": "columns/meta.column.names",
+    "missingOrInvalidValues": [
+      "",
+      "*",
+      "#",
+      "?",
+      "null",
+      "~"
+    ],
+    "negTags": [
+      "B"
+    ],
+    "posTags": [
+      "M"
+    ],
+    "source": "LOCAL",
+    "targetColumnName": "diagnosis",
+    "validationDataPath": null,
+    "validationFilterExpressions": "",
+    "weightColumnName": ""
+  },
+  "evals": [
+    {
+      "customPaths": {},
+      "dataSet": {
+        "dataDelimiter": "|",
+        "dataPath": "/home/licliu/shifu/shifu-0.12.1-SNAPSHOT/example/cancer-judgement/DataStore/EvalSet1",
+        "filterExpressions": "",
+        "headerDelimiter": "|",
+        "headerPath": "/home/licliu/shifu/shifu-0.12.1-SNAPSHOT/example/cancer-judgement/DataStore/EvalSet1/.pig_header",
+        "metaColumnNameFile": "columns/Eval1.meta.column.names",
+        "negTags": [
+          "B"
+        ],
+        "posTags": [
+          "M"
+        ],
+        "source": "LOCAL",
+        "targetColumnName": "diagnosis",
+        "weightColumnName": ""
+      },
+      "name": "Eval1",
+      "normAllColumns": false,
+      "performanceBucketNum": 10,
+      "performanceScoreSelector": "mean",
+      "scoreMetaColumnNameFile": "columns/Eval1champion.score.column.names"
+    }
+  ],
+  "normalize": {
+    "normType": "ZSCALE",
+    "sampleNegOnly": false,
+    "sampleRate": 1.0,
+    "stdDevCutOff": 6.0
+  },
+  "stats": {
+    "binningAlgorithm": "SPDTI",
+    "binningMethod": "EqualPositive",
+    "cateMaxNumBin": 0,
+    "maxNumBin": 10,
+    "psiColumnName": "",
+    "sampleNegOnly": false,
+    "sampleRate": 1.0
+  },
+  "train": {
+    "algorithm": "NN",
+    "baggingNum": 1,
+    "baggingSampleRate": 1.0,
+    "baggingWithReplacement": false,
+    "customPaths": {},
+    "isContinuous": false,
+    "numTrainEpochs": 200,
+    "params": {
+      "ActivationFunc": "tanh",
+      "LearningRate": 0.1,
+      "NumHiddenLayers": 1,
+      "NumHiddenNodes": 10,
+      "Propagation": "R",
+      "RegularizedConstant": 0.0
+    },
+    "validSetRate": 0.2,
+    "workerThreadCount": 4
+  },
+  "varSelect": {
+    "autoFilterEnable": true,
+    "candidateColumnNameFile": null,
+    "correlationThreshold": 1.0,
+    "filterBy": "KS",
+    "filterEnable": true,
+    "filterNum": 200,
+    "filterOutRatio": 0.05,
+    "forceEnable": true,
+    "forceRemoveColumnNameFile": "columns/forceremove.column.names",
+    "forceSelectColumnNameFile": "columns/forceselect.column.names",
+    "minIvThreshold": 0.0,
+    "minKsThreshold": 0.0,
+    "missingRateThreshold": 0.98,
+    "params": null,
+    "postCorrelationMetric": "IV"
+  }
+}
