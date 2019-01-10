@@ -1,19 +1,40 @@
 {
-  "name": "shifu_cam",
+  "name": "shifuTest",
   "algorithm": "BayesianOptimization",
-  "trialNumber": 10,
-  "path": "./advisor_client/examples/shifu/",
+  "trialNumber": 30,
+  "concurrency": 1,
+  "path": "/home/licliu/advisor/advisor_client/examples/shifu/",
   "command": "./shifu.py",
   "search_space": {
-      "goal": "MINIMIZE",
-      "randomInitTrials":5,
-      "params": [
-          {
-              "parameterName": "x",
-              "type": "DOUBLE",
-              "minValue": -10.0,
-              "maxValue": 10.0
-          }
-      ]
+    "goal": "MINIMIZE",
+    "randomInitTrials": 5,
+    "maxTrials": 5,
+    "maxParallelTrials": 1,
+    "params": [
+      {
+        "parameterName": "LearningRate",
+        "type": "DOUBLE",
+        "minValue": 0.1,
+        "maxValue": 1,
+        "feasiblePoints": "",
+        "scalingType": "LINEAR"
+      },
+      {
+        "parameterName": "NumHiddenNodes",
+        "type": "INTEGER",
+        "minValue": 10,
+        "maxValue": 30,
+        "feasiblePoints": "",
+        "scalingType": "LINEAR"
+      },
+      {
+        "parameterName": "ActivationFunc",
+        "type": "CATEGORICAL",
+        "minValue": 0,
+        "maxValue": 0,
+        "feasiblePoints": "tanh,ReLU",
+        "scalingType": "LINEAR"
+      }
+    ]
   }
 }
