@@ -18,12 +18,12 @@ def main():
     # ActivationFunc = args.ActivationFunc
 
     # Change model config
-    with open("./advisor_client/examples/shifu/autoMLTest/ModelConfig.json","r+") as modelConfigFile:
+    with open("./autoMLTest/ModelConfig.json","r+") as modelConfigFile:
         modelConfig = json.loads(modelConfigFile.read())
         for arg, value in vars(args).items():
             modelConfig["train"]["params"][arg] = value
 
-    with open("./advisor_client/examples/shifu/autoMLTest/ModelConfig.json", "wt") as t:
+    with open("./autoMLTest/ModelConfig.json", "wt") as t:
       json.dump(modelConfig,t,indent=2,sort_keys=True)
 
     # Compute or learning
