@@ -32,7 +32,7 @@
         "type": "CATEGORICAL",
         "minValue": 0,
         "maxValue": 0,
-        "feasiblePoints": "tanh,ReLU",
+        "feasiblePoints": "Tanh,ReLU",
         "scalingType": "LINEAR"
       }
     ]
