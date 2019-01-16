@@ -7,6 +7,7 @@ import platform
 import six
 import os
 import tempfile
+import time
 
 from advisor_client.runner.runner_launcher import RunnerLauncher
 from django.contrib import messages
@@ -102,26 +103,30 @@ def v1_run_study(request):
     ml_path, ml_script = '', ''
     for f in os.listdir("../advisor_client/examples/" + ml_package):
       if f.endswith('.py'):
-        ml_path = './advisor_client/examples/' + ml_package
+        ml_path = '../advisor_client/examples/' + ml_package
         ml_script = './' + f
         break
 
+    print(request.POST)
     run_config = {
       "name": request.POST.get("name"),
       "algorithm": request.POST.get("algorithm"),
-      "trialNumber": int(request.POST.get("trial-number")),
+      "trialNumber": int(request.POST.get('trial-number') if request.POST.get('trial-number').strip() != '' else '10'),
       "path": ml_path,
       "command": ml_script,
       "search_space": json.loads(request.POST.get("study_configuration"))
     }
 
-    new_file, filename = tempfile.mkstemp()
+    new_file, filename = tempfile.mkstemp(suffix='.json')
     print(filename)
     os.write(new_file, json.dumps(run_config).encode())
     os.close(new_file)
 
-    subprocess.run([os.getcwd() + "/../advisor_client/advisor_client/commandline/command.py", "run", "-f", filename], capture_output=True)
-
+    p = subprocess.Popen([os.getcwd() + "/../advisor_client/advisor_client/commandline/command.py", 
+        "run", "-f", filename], stderr=subprocess.STDOUT, text=True)
+    #print(p.returncode)
+    #print(p.stdout)
+    time.sleep(1)
     return redirect("index")
   else:
     response = {

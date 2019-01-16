@@ -44,7 +44,7 @@ class RunnerLauncher():
     logging.info("Run with config: {}".format(self.run_config_dict))
     client = AdvisorClient()
 
-    self.run_config_dict
+    print(self.run_config_dict)
 
     # TODO: move the logic into local runner
     runner = LocalRunner()
