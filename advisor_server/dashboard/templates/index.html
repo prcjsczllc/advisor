@@ -249,17 +249,14 @@
 
                 {% for champion in champions %}
                 <tr>
-                    <td class="active"><a href="/dashboard/v1/studies/{{ trial.study_name }}/trials/{{ trial.id }}">{{ trial.id }}</a></td>
-                    <td class="text-center success">{{ trial.study_name }}</td>
-                    <td class="text-center warning">{{ trial.name }}</td>
-                    <td class="text-center danger">{{ trial.parameter_values }}</td>
-                    <td class="text-center info">{{ trial.objective_value }}</td>
-                    <td class="text-center active">{{ trial.status }}</td>
-                    <td class="text-center success">{{ trial.created_time }}</td>
-                    <td class="text-center warning">{{ trial.updated_time }}</td>
+                    <td class="active"><a href="/dashboard/v1/studies/{{ champion.study_name }}/champions/{{ champion.id }}">{{ champion.id }}</a></td>
+                    <td class="text-center success">{{ champion.study_name }}</td>
+                    <td class="text-center warning">{{ champion.data_matrix }}</td>
+                    <td class="text-center danger">{{ champion.algorithm }}</td>
+                    <td class="text-center info">{{ champion.champion_parameters }}</td>
                     <td class="text-center danger">
                         <input type="image" width="22px" src="/static/images/delete-icon.png" alt="Delete"
-                               onclick="delete_resource('/dashboard/v1/studies/{{ trial.study_name }}/trials/{{ trial.id }}')"/>
+                               onclick="delete_resource('/dashboard/v1/studies/{{ champion.study_name }}/champions/{{ champion.id }}')"/>
                     </td>
                 </tr>
                 {% endfor %}

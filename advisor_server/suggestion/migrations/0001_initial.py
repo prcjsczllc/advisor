@@ -49,6 +49,16 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.CreateModel(
+            name='Champion',
+            fields=[
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('study_name', models.CharField(max_length=128)),
+                ('data_matrix', models.CharField(max_length=128)),
+                ('algorithm', models.CharField(max_length=128)),
+                ('champion_parameters', models.CharField(max_length=128)),
+            ],
+        ),
+        migrations.CreateModel(
             name='TrialMetric',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),

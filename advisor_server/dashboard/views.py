@@ -29,6 +29,7 @@ import subprocess
 
 from suggestion.models import Study
 from suggestion.models import Trial
+from suggestion.models import Champion
 
 
 @login_required
@@ -49,14 +50,22 @@ def index(request):
   except Study.DoesNotExist:
     trials = []
 
+
   packages = [f for f in os.listdir('../advisor_client/examples/')]
+
+  try:
+    champions = [champion.to_json() for champion in Champion.objects.all()]
+  except Study.DoesNotExist:
+    champions = []
+
 
   context = {
       "success": True,
       "studies": studies,
       "trials": trials,
-      "platform": platform,
       "packages": packages,
+      "champions": champions,
+      "platform": platform
   }
   return render(request, "index.html", context)
 
@@ -167,6 +176,49 @@ def v1_study(request, study_name):
     response = requests.delete(url)
     messages.info(request, response.content)
     return redirect("index")
+  else:
+    response = {
+        "error": True,
+        "message": "{} method not allowed".format(request.method)
+    }
+    return JsonResponse(response, status=405)
+
+
+@csrf_exempt
+def v1_champion(request, study_name, champion_id):
+  url = "http://127.0.0.1:{}/suggestion/v1/studies/{}/champions/{}".format(
+      request.META.get("SERVER_PORT"), study_name, champion_id)
+
+  if request.method == "GET":
+    response = requests.get(url)
+
+    if six.PY2:
+      champion = json.loads(response.content.decode("utf-8"))["data"]
+    else:
+      champion = json.loads(response.text)["data"]
+    context = {
+        "success": True,
+        "champion": champion
+    }
+    return render(request, "champion_detail.html", context)
+  elif request.method == "DELETE":
+    response = requests.delete(url)
+    messages.info(request, response.content)
+    return redirect("index")
+  elif request.method == "PUT" or request.method == "POST":
+    objective_value_string = request.POST.get("objective_value", "1.0")
+    objective_value = float(objective_value_string)
+    status = request.POST.get("status", "Completed")
+    data = {"objective_value": objective_value, "status": status}
+    response = requests.put(url, json=data)
+    messages.info(request, response.content)
+
+    if six.PY2:
+      champion = json.loads(response.content.decode("utf-8"))["data"]
+    else:
+      champion = json.loads(response.text)["data"]
+    context = {"success": True, "trial": champion, "trial_metrics": []}
+    return render(request, "trial_detail.html", context)
   else:
     response = {
         "error": True,
