@@ -28,18 +28,20 @@ class RunnerLauncher():
     # Example: {u'name': u'simple1', u'algorithm': u'RandomSearch', u'runner': u'local_runner', u'search_space': {u'maxTrials': 5, u'params': [{u'scalingType': u'LINEAR', u'type': u'DOUBLE', u'maxValue': 0.01, u'minValue': 0.001, u'parameterName': u'gamma', u'feasiblePoints': u''}], u'randomInitTrials': 1, u'goal': u'MINIMIZE', u'maxParallelTrials': 1}, u'trialNumber':3, u'concurrency': 1, u'path': u'~/code/', u'command': u'python ./simple_function.py'}
     self.run_config_dict = {}
 
-    with open(run_file, "r") as f:
+    if run_file:
+        with open(run_file, "r") as f:
 
-      if run_file.endswith(".json"):
-        self.run_config_dict = json.load(f)
-      elif run_file.endswith(".yml") or run_file.endswith(".yaml"):
-        self.run_config_dict = yaml.safe_load(f)
-      else:
-        logging.error("Unsupport config file format, use json or yaml")
+          if run_file.endswith(".json"):
+            self.run_config_dict = json.load(f)
+          elif run_file.endswith(".yml") or run_file.endswith(".yaml"):
+            self.run_config_dict = yaml.safe_load(f)
+          else:
+            logging.error("Unsupport config file format, use json or yaml")
 
-      logging.info("Run with config: {}".format(self.run_config_dict))
+          logging.info("Run with config: {}".format(self.run_config_dict))
 
   def run(self):
+    logging.info("Run with config: {}".format(self.run_config_dict))
     client = AdvisorClient()
 
     self.run_config_dict
@@ -67,7 +69,7 @@ class RunnerLauncher():
 
       # Get suggested trials
       trials = client.get_suggestions(study.name, 1)
-
+      print("debug: " + str(trials))
       logging.info("Get trial: {}".format(trials[0]))
 
       #import ipdb;ipdb.set_trace()

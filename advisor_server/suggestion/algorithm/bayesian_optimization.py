@@ -23,6 +23,10 @@ class BayesianOptimization(AbstractSuggestionAlgorithm):
     completed_trials = Trial.objects.filter(
         study_name=study_name, status="Completed")
     study_configuration_json = json.loads(study.study_configuration)
+    print(type(study.study_configuration))
+    print(study.study_configuration)
+    print(type(study_configuration_json))
+    print(study_configuration_json)
     random_init_trial_number = study_configuration_json.get(
         "randomInitTrials", 3)
     params = study_configuration_json["params"]

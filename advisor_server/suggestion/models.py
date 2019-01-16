@@ -1,7 +1,16 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import pytz
 from django.db import models
+
+
+def convert_to_localtime(utctime):
+    fmt = '%d/%m/%Y %H:%M:%S'
+    utc = utctime.replace(tzinfo=pytz.UTC)
+    localtz = utc.astimezone(pytz.timezone('US/Pacific'))
+
+    return localtz.strftime(fmt)
 
 
 class Study(models.Model):
@@ -37,8 +46,8 @@ class Study(models.Model):
         "study_configuration": self.study_configuration,
         "algorithm": self.algorithm,
         "status": self.status,
-        "created_time": self.created_time,
-        "updated_time": self.updated_time
+        "created_time": convert_to_localtime(self.created_time),
+        "updated_time": convert_to_localtime(self.updated_time),
     }
 
 

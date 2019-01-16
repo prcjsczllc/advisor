@@ -5,7 +5,10 @@ import json
 import requests
 import platform
 import six
+import os
+import tempfile
 
+from advisor_client.runner.runner_launcher import RunnerLauncher
 from django.contrib import messages
 from django.shortcuts import redirect
 from django.http import HttpResponse
@@ -21,6 +24,7 @@ from django.conf import settings
 from django import forms
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
+import subprocess
 
 from suggestion.models import Study
 from suggestion.models import Trial
@@ -44,11 +48,14 @@ def index(request):
   except Study.DoesNotExist:
     trials = []
 
+  packages = [f for f in os.listdir('../advisor_client/examples/')]
+
   context = {
       "success": True,
       "studies": studies,
       "trials": trials,
-      "platform": platform
+      "platform": platform,
+      "packages": packages,
   }
   return render(request, "index.html", context)
 
@@ -58,14 +65,14 @@ def v1_studies(request):
   if request.method == "POST":
     name = request.POST.get("name", "")
     study_configuration = request.POST.get("study_configuration", "")
-    algorighm = request.POST.get("algorithm", "RandomSearchAlgorithm")
+    algorithm = request.POST.get("algorithm", "RandomSearchAlgorithm")
 
     # Remove the charactors like \t and \"
     study_configuration_json = json.loads(study_configuration)
     data = {
         "name": name,
         "study_configuration": study_configuration_json,
-        "algorithm": algorighm
+        "algorithm": algorithm
     }
 
     url = "http://127.0.0.1:{}/suggestion/v1/studies".format(
@@ -77,6 +84,49 @@ def v1_studies(request):
     response = {
         "error": True,
         "message": "{} method not allowed".format(request.method)
+    }
+    return JsonResponse(response, status=405)
+
+
+@csrf_exempt
+def v1_run_study(request):
+  if request.method == 'POST':
+    print(request.POST.get("name"))
+    print(request.POST.get("study_configuration"))
+    print(request.POST.get("trial-number"))
+    print(request.POST.get("algorithm"))
+    print(request.POST.get("ml-package"))
+
+    ml_package = request.POST.get('ml-package')
+    # find training script
+    ml_path, ml_script = '', ''
+    for f in os.listdir("../advisor_client/examples/" + ml_package):
+      if f.endswith('.py'):
+        ml_path = './advisor_client/examples/' + ml_package
+        ml_script = './' + f
+        break
+
+    run_config = {
+      "name": request.POST.get("name"),
+      "algorithm": request.POST.get("algorithm"),
+      "trialNumber": int(request.POST.get("trial-number")),
+      "path": ml_path,
+      "command": ml_script,
+      "search_space": json.loads(request.POST.get("study_configuration"))
+    }
+
+    new_file, filename = tempfile.mkstemp()
+    print(filename)
+    os.write(new_file, json.dumps(run_config).encode())
+    os.close(new_file)
+
+    subprocess.run([os.getcwd() + "/../advisor_client/advisor_client/commandline/command.py", "run", "-f", filename], capture_output=True)
+
+    return redirect("index")
+  else:
+    response = {
+      "error": True,
+      "message": "{} method not allowed".format(request.method)
     }
     return JsonResponse(response, status=405)
 
