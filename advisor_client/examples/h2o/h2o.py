@@ -4,6 +4,8 @@ import argparse
 import subprocess
 import json
 import os
+import h2o
+from from h2o.estimators.glm import H2OGeneralizedLinearEstimator
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-LearningRate", type=float, default=0.1)
@@ -14,19 +16,16 @@ args = parser.parse_args()
 
 def main():
 
-    # get path
-    shifuPath = os.getcwd() + "/autoMLTest"
+    # start h2o cluster
+    h2o.init()
 
-    # Change model config
-    with open(shifuPath + "/ModelConfig.json","r+") as modelConfigFile:
-        modelConfig = json.loads(modelConfigFile.read())
-        for arg, value in vars(args).items():
-            modelConfig["train"]["params"][arg] = [value]
-
-    with open(shifuPath + "/ModelConfig.json", "wt") as t:
-        json.dump(modelConfig,t,indent=2,sort_keys=True)
+    # read data
+    data = h2o.import_file(path = "")
+    data[1] = data[1].asfactor()
 
     # Compute or learning
+    m = H2OGeneralizedLinearEstimator(family="binomial")
+    m.train(x = fr.names[2:],y="CAPSULE",training_frame=data)
     subprocess.call(["cd " + shifuPath + " && bash shifu train > train.log"],shell=True)
 
     # Output the metrics

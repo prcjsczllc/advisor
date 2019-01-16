@@ -3,8 +3,8 @@
   "algorithm": "BayesianOptimization",
   "trialNumber": 30,
   "concurrency": 1,
-  "path": "./advisor_client/examples/shifu/",
-  "command": "./shifu.py",
+  "path": "./advisor_client/examples/h2o/",
+  "command": "./h2o.py",
   "search_space": {
     "goal": "MINIMIZE",
     "randomInitTrials": 5,
