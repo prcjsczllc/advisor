@@ -1,0 +1,64 @@
+{
+  "name": "shifuTest2",
+  "algorithm": "BayesianOptimization",
+  "trialNumber": 30,
+  "concurrency": 1,
+  "path": "./advisor_client/examples/shifu/",
+  "command": "./shifu0.py",
+  "search_space": {
+    "goal": "MINIMIZE",
+    "randomInitTrials": 5,
+    "maxTrials": 5,
+    "maxParallelTrials": 1,
+    "params": [
+      {
+        "parameterName": "LearningRate",
+        "type": "DOUBLE",
+        "minValue": 0.1,
+        "maxValue": 1,
+        "feasiblePoints": "",
+        "scalingType": "LINEAR"
+      },
+      {
+        "parameterName": "NumHiddenNodes",
+        "type": "INTEGER",
+        "minValue": 10,
+        "maxValue": 30,
+        "feasiblePoints": "",
+        "scalingType": "LINEAR"
+      },
+      {
+        "parameterName": "ActivationFunc",
+        "type": "CATEGORICAL",
+        "minValue": 0,
+        "maxValue": 0,
+        "feasiblePoints": "Tanh,ReLU",
+        "scalingType": "LINEAR"
+      },
+      {
+        "parameterName": "binningMethod",
+        "type": "CATEGORICAL",
+        "minValue": 0,
+        "maxValue": 0,
+        "feasiblePoints": "EqualPositive,EqualTotal",
+        "scalingType": "LINEAR"
+      },
+      {
+        "parameterName": "filterBy",
+        "type": "CATEGORICAL",
+        "minValue": 0,
+        "maxValue": 0,
+        "feasiblePoints": "KS,IV",
+        "scalingType": "LINEAR"
+      },
+      {
+        "parameterName": "normType",
+        "type": "CATEGORICAL",
+        "minValue": 0,
+        "maxValue": 0,
+        "feasiblePoints": "ZSCALE,WOE_ZSCALE",
+        "scalingType": "LINEAR"
+      }
+    ]
+  }
+}

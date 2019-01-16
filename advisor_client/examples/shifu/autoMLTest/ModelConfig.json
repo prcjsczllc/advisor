@@ -87,10 +87,16 @@
     "isContinuous": false,
     "numTrainEpochs": 200,
     "params": {
-      "ActivationFunc": "tanh",
-      "LearningRate": 0.1,
+      "ActivationFunc": [
+        "tanh"
+      ],
+      "LearningRate": [
+        0.44973936041036455
+      ],
       "NumHiddenLayers": 1,
-      "NumHiddenNodes": 10,
+      "NumHiddenNodes": [
+        13
+      ],
       "Propagation": "R",
       "RegularizedConstant": 0.0
     },

@@ -76,8 +76,8 @@ class RunnerLauncher():
       parameter_value_dicts = []
       for trial in trials:
         parameter_value_dict = json.loads(trial.parameter_values)
-        logging.info(
-            "The suggested parameters: {}".format(parameter_value_dict))
+        # logging.info(
+        #     "The suggested parameters: {}".format(parameter_value_dict))
         parameter_value_dicts.append(parameter_value_dict)
 
       # Run training
