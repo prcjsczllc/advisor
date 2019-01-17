@@ -108,12 +108,8 @@ def v1_run_study(request):
 
     ml_package = request.POST.get('ml-package')
     # find training script
-    ml_path, ml_script = '', ''
-    for f in os.listdir("../advisor_client/examples/" + ml_package):
-      if f.endswith('.py'):
-        ml_path = '../advisor_client/examples/' + ml_package
-        ml_script = './' + f
-        break
+    ml_path = '../advisor_client/examples/' + ml_package
+    ml_script = './run.py'
 
     print(request.POST)
     run_config = {
@@ -130,7 +126,7 @@ def v1_run_study(request):
     os.write(new_file, json.dumps(run_config).encode())
     os.close(new_file)
 
-    p = subprocess.Popen([os.getcwd() + "/../advisor_client/advisor_client/commandline/command.py", 
+    p = subprocess.Popen([os.getcwd() + "/../advisor_client/advisor_client/commandline/command.py",
         "run", "-f", filename], stderr=subprocess.STDOUT, text=True)
     #print(p.returncode)
     #print(p.stdout)
@@ -173,8 +169,9 @@ def v1_study(request, study_name):
           if goal.upper() == 'MAXIMIZE' and t['objective_value'] and t['objective_value'] > opt_val:
             opt_id = t['id']
             opt_val = t['objective_value']
-          seqs.append(t['seq'])
-          opt_vals.append(t['objective_value'])
+          if t['objective_value']:
+            seqs.append(t['seq'])
+            opt_vals.append(t['objective_value'])
       context = {"success": True, "study": study, "trials": trials, "opt_id": opt_id,
                  "seqs": seqs, "opt_vals": opt_vals,
                  "autorefresh": True if study['status'].lower() == 'pending' else False }
