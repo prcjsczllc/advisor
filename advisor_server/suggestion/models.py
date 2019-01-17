@@ -83,8 +83,8 @@ class Trial(models.Model):
         "parameter_values": self.parameter_values,
         "objective_value": self.objective_value,
         "status": self.status,
-        "created_time": self.created_time,
-        "updated_time": self.updated_time
+        "created_time": convert_to_localtime(self.created_time),
+        "updated_time": convert_to_localtime(self.updated_time)
     }
 
 class Champion(models.Model):
@@ -145,8 +145,8 @@ class TrialMetric(models.Model):
         "trial_id": self.trial_id,
         "training_step": self.training_step,
         "objective_value": self.objective_value,
-        "created_time": self.created_time,
-        "updated_time": self.updated_time
+        "created_time": convert_to_localtime(self.created_time),
+        "updated_time": convert_to_localtime(self.updated_time)
     }
 
 

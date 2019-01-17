@@ -9,7 +9,6 @@ import os
 import tempfile
 import time
 
-from advisor_client.runner.runner_launcher import RunnerLauncher
 from django.contrib import messages
 from django.shortcuts import redirect
 from django.http import HttpResponse
@@ -164,7 +163,11 @@ def v1_study(request, study_name):
       else:
         study = json.loads(response.text)["data"]
         trials = json.loads(tirals_response.text)["data"]
-      context = {"success": True, "study": study, "trials": trials}
+      min_id, min_val = trials[0]['id'], trials[0]['objective_value']
+      for t in trials[1:]:
+        if t['objective_value'] < min_val:
+          min_id = t['id']
+      context = {"success": True, "study": study, "trials": trials, "min_id": min_id}
       return render(request, "study_detail.html", context)
     else:
       response = {

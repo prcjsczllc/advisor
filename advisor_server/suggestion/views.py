@@ -175,7 +175,6 @@ def v1_study_trials(request, study_name):
   elif request.method == "GET":
     trials = Trial.objects.filter(study_name=study_name)
     response_data = [trial.to_json() for trial in trials]
-
     return JsonResponse({"data": response_data})
   else:
     return JsonResponse({"error": "Unsupported http method"})
