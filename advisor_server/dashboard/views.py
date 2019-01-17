@@ -5,7 +5,11 @@ import json
 import requests
 import platform
 import six
+import os
+import tempfile
+import time
 
+from advisor_client.runner.runner_launcher import RunnerLauncher
 from django.contrib import messages
 from django.shortcuts import redirect
 from django.http import HttpResponse
@@ -21,9 +25,11 @@ from django.conf import settings
 from django import forms
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
+import subprocess
 
 from suggestion.models import Study
 from suggestion.models import Trial
+from suggestion.models import Champion
 
 
 @login_required
@@ -44,10 +50,21 @@ def index(request):
   except Study.DoesNotExist:
     trials = []
 
+
+  packages = [f for f in os.listdir('../advisor_client/examples/')]
+
+  try:
+    champions = [champion.to_json() for champion in Champion.objects.all()]
+  except Study.DoesNotExist:
+    champions = []
+
+
   context = {
       "success": True,
       "studies": studies,
       "trials": trials,
+      "packages": packages,
+      "champions": champions,
       "platform": platform
   }
   return render(request, "index.html", context)
@@ -58,14 +75,14 @@ def v1_studies(request):
   if request.method == "POST":
     name = request.POST.get("name", "")
     study_configuration = request.POST.get("study_configuration", "")
-    algorighm = request.POST.get("algorithm", "RandomSearchAlgorithm")
+    algorithm = request.POST.get("algorithm", "RandomSearchAlgorithm")
 
     # Remove the charactors like \t and \"
     study_configuration_json = json.loads(study_configuration)
     data = {
         "name": name,
         "study_configuration": study_configuration_json,
-        "algorithm": algorighm
+        "algorithm": algorithm
     }
 
     url = "http://127.0.0.1:{}/suggestion/v1/studies".format(
@@ -77,6 +94,53 @@ def v1_studies(request):
     response = {
         "error": True,
         "message": "{} method not allowed".format(request.method)
+    }
+    return JsonResponse(response, status=405)
+
+
+@csrf_exempt
+def v1_run_study(request):
+  if request.method == 'POST':
+    print(request.POST.get("name"))
+    print(request.POST.get("study_configuration"))
+    print(request.POST.get("trial-number"))
+    print(request.POST.get("algorithm"))
+    print(request.POST.get("ml-package"))
+
+    ml_package = request.POST.get('ml-package')
+    # find training script
+    ml_path, ml_script = '', ''
+    for f in os.listdir("../advisor_client/examples/" + ml_package):
+      if f.endswith('.py'):
+        ml_path = '../advisor_client/examples/' + ml_package
+        ml_script = './' + f
+        break
+
+    print(request.POST)
+    run_config = {
+      "name": request.POST.get("name"),
+      "algorithm": request.POST.get("algorithm"),
+      "trialNumber": int(request.POST.get('trial-number') if request.POST.get('trial-number').strip() != '' else '10'),
+      "path": ml_path,
+      "command": ml_script,
+      "search_space": json.loads(request.POST.get("study_configuration"))
+    }
+
+    new_file, filename = tempfile.mkstemp(suffix='.json')
+    print(filename)
+    os.write(new_file, json.dumps(run_config).encode())
+    os.close(new_file)
+
+    p = subprocess.Popen([os.getcwd() + "/../advisor_client/advisor_client/commandline/command.py", 
+        "run", "-f", filename], stderr=subprocess.STDOUT, text=True)
+    #print(p.returncode)
+    #print(p.stdout)
+    time.sleep(1)
+    return redirect("index")
+  else:
+    response = {
+      "error": True,
+      "message": "{} method not allowed".format(request.method)
     }
     return JsonResponse(response, status=405)
 
@@ -112,6 +176,49 @@ def v1_study(request, study_name):
     response = requests.delete(url)
     messages.info(request, response.content)
     return redirect("index")
+  else:
+    response = {
+        "error": True,
+        "message": "{} method not allowed".format(request.method)
+    }
+    return JsonResponse(response, status=405)
+
+
+@csrf_exempt
+def v1_champion(request, study_name, champion_id):
+  url = "http://127.0.0.1:{}/suggestion/v1/studies/{}/champions/{}".format(
+      request.META.get("SERVER_PORT"), study_name, champion_id)
+
+  if request.method == "GET":
+    response = requests.get(url)
+
+    if six.PY2:
+      champion = json.loads(response.content.decode("utf-8"))["data"]
+    else:
+      champion = json.loads(response.text)["data"]
+    context = {
+        "success": True,
+        "champion": champion
+    }
+    return render(request, "champion_detail.html", context)
+  elif request.method == "DELETE":
+    response = requests.delete(url)
+    messages.info(request, response.content)
+    return redirect("index")
+  elif request.method == "PUT" or request.method == "POST":
+    objective_value_string = request.POST.get("objective_value", "1.0")
+    objective_value = float(objective_value_string)
+    status = request.POST.get("status", "Completed")
+    data = {"objective_value": objective_value, "status": status}
+    response = requests.put(url, json=data)
+    messages.info(request, response.content)
+
+    if six.PY2:
+      champion = json.loads(response.content.decode("utf-8"))["data"]
+    else:
+      champion = json.loads(response.text)["data"]
+    context = {"success": True, "trial": champion, "trial_metrics": []}
+    return render(request, "trial_detail.html", context)
   else:
     response = {
         "error": True,

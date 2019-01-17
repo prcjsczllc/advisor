@@ -10,6 +10,7 @@ from django.views.decorators.csrf import csrf_exempt
 from suggestion.models import Study
 from suggestion.models import Trial
 from suggestion.models import TrialMetric
+from suggestion.models import Champion
 from suggestion.algorithm.random_search import RandomSearchAlgorithm
 from suggestion.algorithm.grid_search import GridSearchAlgorithm
 from suggestion.algorithm.bayesian_optimization import BayesianOptimization
@@ -174,6 +175,26 @@ def v1_study_trials(request, study_name):
   elif request.method == "GET":
     trials = Trial.objects.filter(study_name=study_name)
     response_data = [trial.to_json() for trial in trials]
+
+    return JsonResponse({"data": response_data})
+  else:
+    return JsonResponse({"error": "Unsupported http method"})
+
+@csrf_exempt
+def v1_study_champions(request, study_name):
+
+  # Create the trial
+  if request.method == "POST":
+    data = json.loads(request.body)
+    name = data["name"]
+
+    champion = Champion.create(study_name, name)
+    return JsonResponse({"data": champion.to_json()})
+
+  # List the studies
+  elif request.method == "GET":
+    champions = Champion.objects.filter(study_name=study_name)
+    response_data = [champion.to_json() for champion in champions]
 
     return JsonResponse({"data": response_data})
   else:
