@@ -1,5 +1,5 @@
 {
-  "name": "scikitlearn2",
+  "name": "scikitlearn3",
   "algorithm": "BayesianOptimization",
   "trialNumber": 30,
   "concurrency": 1,

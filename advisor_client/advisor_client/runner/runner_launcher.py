@@ -75,7 +75,7 @@ class RunnerLauncher():
       # Generate parameters
       parameter_value_dicts = []
       for trial in trials:
-        parameter_value_dict = json.loads(trial.parameter_values)
+        parameter_value_dict = json.loads(trials[0].parameter_values)
         # logging.info(
         #     "The suggested parameters: {}".format(parameter_value_dict))
         parameter_value_dicts.append(parameter_value_dict)
@@ -91,13 +91,14 @@ class RunnerLauncher():
 
         for k, v in parameters_dict.items():
           parameter_string += " -{}={}".format(k, v)
-
-        command_string = "cd {} && {} {}".format(
+        
+        command_string = "cd {} && {} {} -studyName={} -trialID={}".format(
             self.run_config_dict["path"], self.run_config_dict["command"],
-            parameter_string)
+            parameter_string,study.name,trials[0].id)
 
         #exit_code = subprocess.call(command_string, shell=True)
         logging.info("Run the command: {}".format(command_string))
+        
 
         # Example: '0.0\n'
         # Example: 'Compute y = x * x - 3 * x + 2\nIput x is: 1.0\nOutput is: 0.0\n0.0\n'
