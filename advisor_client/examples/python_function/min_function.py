@@ -4,8 +4,8 @@ import argparse
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-x", type=float, default=0.0)
-parser.add_argument("-studyName", type=float, default="Python")
-parser.add_argument("-trialID", type=float, default="0")
+parser.add_argument("-studyName", type=str, default="Python")
+parser.add_argument("-trialID", type=str, default="0")
 
 args = parser.parse_args()
 
