@@ -1,7 +1,7 @@
 def readModelConfigStructure(modelConfig):
     d = dict()
     for key in modelConfig.keys():
-        if key == 'train':
+        if key == "train":
             for key2, value2 in modelConfig[key].items():
                 if key2 == "params":
                     for key3,value3 in value2.items():
@@ -9,6 +9,8 @@ def readModelConfigStructure(modelConfig):
                         d[key3][key2] = "train"
                     else:
                         d[key2] = "train"
+                else:
+                    d[key2] = "train"
         elif key =="normalize":
             for key2 in modelConfig[key].keys():
                 d[key2] = "normalize"
@@ -18,7 +20,9 @@ def readModelConfigStructure(modelConfig):
         elif key =="varSelect":
             for key2 in modelConfig[key].keys():
                 d[key2] = "varSelect"
+    d["Loss"]="train"
     return d
+
 def trainEvalSplit(inputFilePath, outputPath, testRatio,delimiter):
     import pandas as pd
     import numpy as np
@@ -35,25 +39,34 @@ def trainEvalSplit(inputFilePath, outputPath, testRatio,delimiter):
     trainDF.to_csv(outputPath + "/trainData.csv",index = False,sep=delimiter)
     evalDF.to_csv(outputPath + "/evalData.csv",index = False,sep=delimiter)
     return outputPath + "/trainData.csv",outputPath + "/evalData.csv"
-def evalMetrics(evalConfig,shifuJobPath,package,metricType):
+
+def evalMetrics(evalConfig,shifuJobPath,package,metricInfo):
     import json
     import subprocess
     if package == "shifu":
         subprocess.call(["cd " + shifuJobPath + " && bash shifu eval > eval.log"],shell=True)
-        if metricType == "auc":
+        if metricInfo == "auc":
             with open(shifuJobPath + "/evals/Eval1/EvalPerformance.json") as f:
                 evals = json.loads(f.read())
             metric = evals["areaUnderRoc"]
+        elif metricType.split(",")[0]=="catch rate":
+            for op in evals["pr"]:
+                if abs(op["actionRate"] - metricType.split(",")[1])<10E-4:
+                    metric = op["recall"]
+        elif metricType.split(",")[0]=="hit rate":
+                if abs(op["actionRate"] - metricType.split(",")[1])<10E-4:
+                    metric = op["precision"]
     return metric
+
 def setDefaultParams():
     import argparse
     parser = argparse.ArgumentParser()
     #info
     parser.add_argument("-trialID",type=str,default = "0")
     parser.add_argument("-studyName",type=str,default = "shifuJob")
-    parser.add_argument("-trainDataPath",type=str,default = "/home/licliu/advisor/advisor_client/examples/data/givemesomecredit/cs-training.csv")
+    parser.add_argument("-trainDataPath",type=str,default = "../data/givemesomecredit/cs-training.csv")
     parser.add_argument("-evalDataPath",type=str,default = "")
-    parser.add_argument("-metricType",type=str,default = "auc")
+    parser.add_argument("-metricInfo",type=str,default = "auc")
     #stats
     parser.add_argument("-binningMethod", type=str, default="EqualPostive")
     parser.add_argument("-binningAlgorithm", type=str, default="SPDTI")
@@ -77,12 +90,14 @@ def setDefaultParams():
     #parser.add_argument("-baggingSampleRate", type=float, default="0.8")
     #parser.add_argument("-validSetRate", type=float, default="0.2")
     #parser.add_argument("-algorithm", type=str, default="NN")
-    #parser.add_argument("-Loss",type=str,default = "Squared")
+    parser.add_argument("-MLPackage", type=str, default="shifu")
+    parser.add_argument("-Loss",type=str,default = "Squared")
     # NN
     parser.add_argument("-LearningRate", type=float, default="0.1")
     parser.add_argument("-ActivationFunc", type=str, default="ReLU")
     parser.add_argument("-NumHiddenLayers", type=int, default="1")
     parser.add_argument("-NumHiddenNodes", type=int, default="10")
+    parser.add_argument("-numTrainEpochs",type=int,default="100")
     # GBT
     #parser.add_argument("-MaxDepth", type=float, default=10)
     #parser.add_argument("-TreeNum", type=float, default=10)

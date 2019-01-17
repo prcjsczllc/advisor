@@ -4,7 +4,9 @@ import argparse
 import subprocess
 import json
 import os
-from utils import readModelConfigStructure,trainEvalSplit,evalMetrics,setDefaultParams
+import sys
+sys.path.append("..")
+from utils.utils import readModelConfigStructure,trainEvalSplit,evalMetrics,setDefaultParams
 import pandas as np
 
 args = setDefaultParams()
@@ -17,12 +19,13 @@ def main():
     trialID=vars(args)["trialID"]
     trainDataPath=vars(args)["trainDataPath"]
     evalDataPath = vars(args)["evalDataPath"]
-    metricType=vars(args)["metricType"]
+    metricInfo=vars(args)["metricInfo"]
     del args.studyName
     del args.trialID
     del args.trainDataPath
     del args.evalDataPath
-    del args.metricType
+    del args.metricInfo
+    del args.MLPackage
 
     # get path
     currentPath = os.getcwd()
@@ -74,7 +77,6 @@ def main():
         modelConfig["evals"][0]["dataSet"]["posTags"] = ["1"]
 
         # training setting
-        modelConfig["train"]["fixInitInput"] = "true"
         # change optimizing target parameters
 
         # assign arguements
@@ -125,9 +127,10 @@ def main():
     subprocess.call(["cd " + shifuJobPath + " && bash shifu train > train.log"],shell=True)
 
     # calculate the metrics
-    metric = evalMetrics(evalConfig=modelConfig["evals"][0],shifuJobPath=shifuJobPath,package="shifu",metricType="auc")
+    metric = evalMetrics(evalConfig=modelConfig["evals"][0],shifuJobPath=shifuJobPath,package="shifu",metricInfo=metricInfo)
     #change model name
     subprocess.call(["cd " + shifuJobPath + " && mv models/model0.nn ./modelLibrary/model_" + trialID + ".nn"],shell=True)
+    subprocess.call(["cd " + shifuJobPath + " && mv ColumnConfig.json ./modelLibrary/ColumnConfig_" + trialID + ".json"],shell=True)
     print(metric)
 
 if __name__ == "__main__":

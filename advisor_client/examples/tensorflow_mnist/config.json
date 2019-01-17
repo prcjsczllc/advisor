@@ -1,9 +1,9 @@
 {
-  "name": "simple1",
-  "algorithm": "RandomSearch",
+  "name": "tf1",
+  "algorithm": "BayesianOptimization",
   "trialNumber": 3,
   "concurrency": 1,
-  "path": "~/code/advisor/advisor_client/examples/tensorflow_mnist/",
+  "path": "./advisor_client/examples/tensorflow_mnist/",
   "command": "./tensorflow_mnist.py",
   "search_space": {
       "goal": "MINIMIZE",
