@@ -9,26 +9,45 @@ import pandas as np
 
 args = setDefaultParams()
 
-def getJobInput():
-    return inputDict
-
 
 def main():
+
+    #get optimzation job info
+    studyName=vars(args)["studyName"]
+    trialID=vars(args)["trialID"]
+    trainDataPath=vars(args)["trainDataPath"]
+    evalDataPath = vars(args)["evalDataPath"]
+    metricType=vars(args)["metricType"]
+    del args.studyName
+    del args.trialID
+    del args.trainDataPath
+    del args.evalDataPath
+    del args.metricType
 
     # get path
     currentPath = os.getcwd()
 
     # create a shifu job
-    shifuJobName = "shifuJob"
-    subprocess.call(["cd " + currentPath + " && bash shifu new " + shifuJobName],shell=True)
-
+    shifuJobName = studyName
     #shifu job path
     shifuJobPath = currentPath + "/" + shifuJobName
+    subprocess.call(["cd " + currentPath + " && bash shifu new " + shifuJobName],shell=True)
+    if not os.path.isdir( shifuJobPath + "/modelLibrary"):
+        subprocess.call(["mkdir " + shifuJobPath + "/modelLibrary"],shell=True)
 
     # split data to train and test
-    inputFilePath="/home/licliu/advisor/advisor_client/examples/data/givemesomecredit/cs-training.csv"
-    if not os.path.isfile(shifuJobPath + '/trainData.csv') or not os.path.isfile(shifuJobPath + '/trainData.csv'):
-        trainEvalSplit(inputFilePath, shifuJobPath, 0.2,",")
+    if evalDataPath == "":
+        if not os.path.exists(shifuJobPath + '/evalData.csv') or not os.path.exists(shifuJobPath + '/evalData.csv'):
+            trainDataPath, evalDataPath = trainEvalSplit(trainDataPath, shifuJobPath, 0.2,",")
+        else:
+            trainDataPath = shifuJobPath + '/trainData.csv'
+            evalDataPath = shifuJobPath + '/evalData.csv'
+    else:
+        if not os.path.exists(shifuJobPath + '/evalData.csv') or not os.path.exists(shifuJobPath + '/evalData.csv'):
+            subprocess.call(["cp " + trainDataPath + " " + shifuJobPath + '/trainData.csv'],shell=True)
+            subprocess.call(["cp " + evalDataPath +  " " + shifuJobPath + '/evalData.csv'],shell=True)
+            trainDataPath = shifuJobPath + '/trainData.csv'
+            evalDataPath = shifuJobPath + '/evalData.csv'
 
     # Change model config
     with open(shifuJobPath + "/ModelConfig.json","r+") as modelConfigFile:
@@ -37,7 +56,7 @@ def main():
 
         # change job info
         # train data
-        modelConfig["dataSet"]["dataPath"] = shifuJobPath + "/trainData.csv"
+        modelConfig["dataSet"]["dataPath"] = trainDataPath
         modelConfig["dataSet"]["dataDelimiter"] = ","
         modelConfig["dataSet"]["headerPath"] = ""
         modelConfig["dataSet"]["headerDelimiter"] = ","
@@ -46,7 +65,7 @@ def main():
         modelConfig["dataSet"]["posTags"] = ["1"]
 
         # eval data
-        modelConfig["evals"][0]["dataSet"]["dataPath"] =  shifuJobPath + "/evalData.csv"
+        modelConfig["evals"][0]["dataSet"]["dataPath"] =  evalDataPath
         modelConfig["evals"][0]["dataSet"]["dataDelimiter"] = ","
         modelConfig["evals"][0]["dataSet"]["headerPath"] = ""
         modelConfig["evals"][0]["dataSet"]["headerDelimiter"] = ","
@@ -55,7 +74,7 @@ def main():
         modelConfig["evals"][0]["dataSet"]["posTags"] = ["1"]
 
         # training setting
-        modelConfig["train"]["fixInitInput"] = true
+        modelConfig["train"]["fixInitInput"] = "true"
         # change optimizing target parameters
 
         # assign arguements
@@ -107,6 +126,8 @@ def main():
 
     # calculate the metrics
     metric = evalMetrics(evalConfig=modelConfig["evals"][0],shifuJobPath=shifuJobPath,package="shifu",metricType="auc")
+    #change model name
+    subprocess.call(["cd " + shifuJobPath + " && mv models/model0.nn ./modelLibrary/model_" + trialID + ".nn"],shell=True)
     print(metric)
 
 if __name__ == "__main__":

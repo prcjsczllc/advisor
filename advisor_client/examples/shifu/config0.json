@@ -1,12 +1,12 @@
 {
-  "name": "shifuTest2",
+  "name": "shifuTest4",
   "algorithm": "BayesianOptimization",
-  "trialNumber": 30,
+  "trialNumber": 20,
   "concurrency": 1,
   "path": "./advisor_client/examples/shifu/",
   "command": "./shifu0.py",
   "search_space": {
-    "goal": "MINIMIZE",
+    "goal": "MAXIMIZE",
     "randomInitTrials": 5,
     "maxTrials": 5,
     "maxParallelTrials": 1,
