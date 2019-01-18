@@ -241,22 +241,23 @@
             <h2>Champions</h2>
 
             <table class="table table-striped table-hover table-condensed">
-                <th class="text-center success">ID</th>
+                <th class="text-center active">ID</th>
                 <th class="text-center success">Study Name</th>
                 <th class="text-center danger">Data Matrix</th>
-                <th class="text-center danger">Algorithm</th>
-                <th class="text-center info">Champion Parameters</th>
+                <th class="text-center info">Algorithm</th>
+                <th class="text-center warning">Parameters</th>
+                <th class="text-center danger">Operation</th>
 
                 {% for champion in champions %}
                 <tr>
-                    <td class="active"><a href="/dashboard/v1/studies/{{ champion.study_name }}/champions/{{ champion.id }}">{{ champion.id }}</a></td>
+                    <td class="text-center active"><a href="/dashboard/v1/champions">{{ champion.id }}</a></td>
                     <td class="text-center success">{{ champion.study_name }}</td>
-                    <td class="text-center warning">{{ champion.data_matrix }}</td>
-                    <td class="text-center danger">{{ champion.algorithm }}</td>
-                    <td class="text-center info">{{ champion.champion_parameters }}</td>
+                    <td class="text-center danger"><pre>{{ champion.data_matrix }}</pre></td>
+                    <td class="text-center info">{{ champion.algorithm }}</td>
+                    <td class="text-center warning"><pre>{{ champion.parameters }}</pre></td>
                     <td class="text-center danger">
                         <input type="image" width="22px" src="/static/images/delete-icon.png" alt="Delete"
-                               onclick="delete_resource('/dashboard/v1/studies/{{ champion.study_name }}/champions/{{ champion.id }}')"/>
+                               onclick="delete_resource('/suggestion/v1/champions/{{ champion.id }}')"/>
                     </td>
                 </tr>
                 {% endfor %}

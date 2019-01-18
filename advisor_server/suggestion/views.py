@@ -32,6 +32,22 @@ def index(request):
 
 
 @csrf_exempt
+def v1_champions(request):
+  # Create the champion
+  if request.method == "POST":
+    data = json.loads(request.body)
+    print(data["study_name"])
+    champion = Champion.create(data["study_name"], data["data_matrix"], data["algorithm"], data["parameters"])
+    return JsonResponse({"data": champion.to_json()})
+  # List the champions
+  elif request.method == "GET":
+    champions = Champion.objects.all()
+    response_data = [champion.to_json() for champion in champions]
+    return JsonResponse({"data": response_data})
+  else:
+    return JsonResponse({"error": "Unsupported http method"})
+
+@csrf_exempt
 def v1_studies(request):
 
   # Create the study
