@@ -180,4 +180,7 @@ label > input:checked + img{ /* (CHECKED) IMAGE STYLES */
 	border:2px solid #f00;
 }
 
+select.form-control option {
+    font-size: 18px !important;
+}
 /* end of image radio style */
