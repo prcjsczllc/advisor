@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 import pytz
+import json
 from django.db import models
 
 
@@ -92,20 +93,20 @@ class Champion(models.Model):
   #study_name = models.ForeignKey(Study, related_name="trial_study", to_field=Study.name)
   study_name = models.CharField(max_length=128, blank=False)
   data_matrix = models.CharField(max_length=128, blank=False)
-
   algorithm = models.CharField(max_length=128, blank=False)
-  champion_parameters = models.CharField(max_length=128, blank=False)
+  parameters = models.CharField(max_length=128, blank=False)
 
   def __str__(self):
     return "{}-{}".format(self.id, self.name)
 
   @classmethod
-  def create(cls, study_name, data_matrix, algorithm, champion_parameters):
+  def create(cls, study_name, data_matrix, algorithm, parameters):
     champion = cls()
     champion.study_name = study_name
     champion.data_matrix = data_matrix
     champion.algorithm = algorithm
-    champion.champion_parameters = champion_parameters
+    champion.parameters = parameters
+    champion.save()
     return champion
 
   def to_json(self):
@@ -114,7 +115,7 @@ class Champion(models.Model):
         "study_name": self.study_name,
         "data_matrix": self.data_matrix,
         "algorithm": self.algorithm,
-        "champion_parameters": self.champion_parameters
+        "parameters": self.parameters
     }
 
 

@@ -55,7 +55,7 @@ class Migration(migrations.Migration):
                 ('study_name', models.CharField(max_length=128)),
                 ('data_matrix', models.CharField(max_length=128)),
                 ('algorithm', models.CharField(max_length=128)),
-                ('champion_parameters', models.CharField(max_length=128)),
+                ('parameters', models.CharField(max_length=128)),
             ],
         ),
         migrations.CreateModel(
