@@ -1,5 +1,5 @@
 {
-  "name": "shifuTest4",
+  "name": "shifuTest5",
   "algorithm": "BayesianOptimization",
   "trialNumber": 20,
   "concurrency": 1,
@@ -18,6 +18,14 @@
         "maxValue": 1,
         "feasiblePoints": "",
         "scalingType": "LINEAR"
+      },
+      {
+          "parameterName": "numTrainEpochs",
+          "type": "INTEGER",
+          "minValue": 200,
+          "maxValue": 500,
+          "feasiblePoints": "",
+          "scalingType": "LINEAR"
       },
       {
         "parameterName": "NumHiddenNodes",

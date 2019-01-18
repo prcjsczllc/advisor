@@ -13,6 +13,8 @@ flags.DEFINE_float("batch_size", 64.0, "")
 flags.DEFINE_float("batch_number", 938.0, "")
 flags.DEFINE_string("optimizer", "sgd", "")
 flags.DEFINE_float("learning_rate", 0.01, "")
+flags.DEFINE_string("trialID","0","")
+flags.DEFINE_string("studyName","tensorflow","")
 FLAGS = flags.FLAGS
 
 

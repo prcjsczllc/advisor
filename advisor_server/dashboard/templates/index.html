@@ -16,8 +16,8 @@
     <ul class="nav nav-pills nav-justified">
         <li class="active"><a data-toggle="tab" href="#studies">Studies</a></li>
         <li><a data-toggle="tab" href="#trials">Trials</a></li>
-        <li><a data-toggle="tab" href="#configuration">Configuration</a>
-        <li><a data-toggle="tab" href="#champions">Champions</a>
+        <!--li><a data-toggle="tab" href="#configuration">Configuration</a-->
+        <li><a data-toggle="tab" href="#champions">Champion Model Library</a>
         <!--
         <li><a data-toggle="tab" href="#notebook">Notebook</a></li>
         -->
@@ -73,6 +73,14 @@
                         <input type="text" class="form-control" name="name" placeholder="study" required="required">
                     </div>
                 </div>
+
+                <div class="form-group row">
+                    <label for="inputEmail3" class="col-sm-2 col-form-label"> Input Data </label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" name="input-data">
+                    </div>
+                </div>
+
                 <div class="form-group row">
                     <label for="inputEmail3" class="col-sm-2 col-form-label"> Study
                         Configuration
@@ -133,6 +141,26 @@
                             <option>{{ package }}</option>
                             {% endfor %}
                         </select>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div class="col-sm-2">
+                        <label for="script">Optimizing Metric</label>
+                    </div>
+                    <div class="col-sm-10">
+                        <select class="form-control" id="metric-info" name="metric-info">
+                            <option>auc</option>
+                            <option>catch rate</option>
+                            <option>hit rate</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="oper-point-box" class="form-group row" style="display:none">
+                    <label for="inputEmail3" class="col-sm-2 col-form-label"> Operating Point </label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" name="oper-point">
                     </div>
                 </div>
 
@@ -206,7 +234,7 @@
         </div>
 
 
-        <div id="configuration" class="tab-pane fade">
+        <!--div id="configuration" class="tab-pane fade">
             <h2>Configuration</h2>
 
             <table class="table table-striped table-hover table-condensed">
@@ -235,7 +263,7 @@
                 </tr>
             </table>
 
-        </div>
+        </div-->
 
         <div id="champions" class="tab-pane fade">
             <h2>Champions</h2>
@@ -275,5 +303,16 @@
     </div>
 
 </div>
+
+<script>
+    $("#metric-info").change(function() {
+        var current = $(this).find("option:selected").text();
+        if (current == "catch rate" || current == "hit rate") {
+            $("#oper-point-box").show();
+        } else {
+            $("#oper-point-box").hide();
+        }
+    });
+</script>
 
 {% include "footer.html" %}
