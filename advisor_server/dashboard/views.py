@@ -50,8 +50,8 @@ def index(request):
     trials = []
 
 
-  packages = ['shifu', 'h2o', 'scikitlearn_mnist', 'xgboost_regressor',
-              'tensorflow_mnist', 'python_function']
+  packages = ['shifu', 'h2o', 'scikitlearn', 'xgboost',
+              'tensorflow', 'python_function']
 
   try:
     champions = [champion.to_json() for champion in Champion.objects.all()]
