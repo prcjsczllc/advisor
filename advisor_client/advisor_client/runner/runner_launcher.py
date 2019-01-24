@@ -38,13 +38,11 @@ class RunnerLauncher():
           else:
             logging.error("Unsupport config file format, use json or yaml")
 
-          logging.info("Run with config: {}".format(self.run_config_dict))
+          # logging.info("Run with config: {}".format(self.run_config_dict))
 
   def run(self):
     logging.info("Run with config: {}".format(self.run_config_dict))
     client = AdvisorClient()
-
-    print(self.run_config_dict)
 
     # TODO: move the logic into local runner
     runner = LocalRunner()
@@ -59,7 +57,9 @@ class RunnerLauncher():
       study_name = self.run_config_dict["name"]
     study = client.get_or_create_study(study_name,
                                        self.run_config_dict["search_space"],
+                                       self.run_config_dict["search_space"]["metricInfo"],
                                        self.run_config_dict["algorithm"])
+    metricInfo = self.run_config_dict["search_space"]["metricInfo"]
 
     logging.info("Create study: {}".format(study))
 
@@ -69,7 +69,7 @@ class RunnerLauncher():
 
       # Get suggested trials
       trials = client.get_suggestions(study.name, 1)
-      print("debug: " + str(trials))
+      # print("debug: " + str(trials))
       logging.info("Get trial: {}".format(trials[0]))
 
       #import ipdb;ipdb.set_trace()
@@ -93,14 +93,14 @@ class RunnerLauncher():
 
         for k, v in parameters_dict.items():
           parameter_string += " -{}={}".format(k, v)
-        
-        command_string = "cd {} && {} {} -studyName={} -trialID={}".format(
+
+        command_string = "cd {} && {} {} -metricInfo={} -studyName={} -trialID={}".format(
             self.run_config_dict["path"], self.run_config_dict["command"],
-            parameter_string,study.name,trials[0].id)
+            parameter_string,metricInfo,study.name,trials[0].id)
 
         #exit_code = subprocess.call(command_string, shell=True)
         logging.info("Run the command: {}".format(command_string))
-        
+
 
         # Example: '0.0\n'
         # Example: 'Compute y = x * x - 3 * x + 2\nIput x is: 1.0\nOutput is: 0.0\n0.0\n'

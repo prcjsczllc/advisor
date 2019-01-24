@@ -24,11 +24,13 @@ class AdvisorClient(object):
   def create_study(self,
                    study_name,
                    study_configuration,
+                   metricInfo,
                    algorithm="BayesianOptimization"):
     url = "{}/suggestion/v1/studies".format(self.endpoint)
     request_data = {
         "name": study_name,
         "study_configuration": study_configuration,
+        "metricInfo":metricInfo,
         "algorithm": algorithm
     }
     response = requests.post(url, json=request_data)
@@ -42,6 +44,7 @@ class AdvisorClient(object):
   def get_or_create_study(self,
                           study_name,
                           study_configuration,
+                          metricInfo,
                           algorithm="BayesianOptimization"):
 
     url = "{}/suggestion/v1/studies/{}/exist".format(self.endpoint, study_name)
@@ -51,7 +54,7 @@ class AdvisorClient(object):
     if study_exist == True:
       study = self.get_study_by_name(study_name)
     else:
-      study = self.create_study(study_name, study_configuration, algorithm)
+      study = self.create_study(study_name, study_configuration,metricInfo, algorithm)
 
     return study
 

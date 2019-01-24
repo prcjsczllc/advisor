@@ -43,18 +43,19 @@ def trainEvalSplit(inputFilePath, outputPath, testRatio,delimiter):
 def evalMetrics(evalConfig,shifuJobPath,package,metricInfo):
     import json
     import subprocess
+    metric = 0
     if package == "shifu":
         subprocess.call(["cd " + shifuJobPath + " && bash shifu eval > eval.log"],shell=True)
+        with open(shifuJobPath + "/evals/Eval1/EvalPerformance.json") as f:
+            evals = json.loads(f.read())
         if metricInfo == "auc":
-            with open(shifuJobPath + "/evals/Eval1/EvalPerformance.json") as f:
-                evals = json.loads(f.read())
             metric = evals["areaUnderRoc"]
-        elif metricType.split(",")[0]=="catch rate":
-            for op in evals["pr"]:
-                if abs(op["actionRate"] - metricType.split(",")[1])<10E-4:
+        elif metricInfo.split(",")[0]=="catch_rate":
+            for op in evals["gains"]:
+                if abs(op["actionRate"] - float(metricInfo.split(",")[1]))<10E-6:
                     metric = op["recall"]
-        elif metricType.split(",")[0]=="hit rate":
-                if abs(op["actionRate"] - metricType.split(",")[1])<10E-4:
+        elif metricInfo.split(",")[0]=="hit_rate":
+                if abs(op["actionRate"] - float(metricInfo.split(",")[1]))<10E-6:
                     metric = op["precision"]
     return metric
 
@@ -68,7 +69,7 @@ def setDefaultParams():
     parser.add_argument("-evalDataPath",type=str,default = "")
     parser.add_argument("-metricInfo",type=str,default = "auc")
     #stats
-    parser.add_argument("-binningMethod", type=str, default="EqualPostive")
+    parser.add_argument("-binningMethod", type=str, default="EqualPositive")
     parser.add_argument("-binningAlgorithm", type=str, default="SPDTI")
     #parser.add_argument("-binningAutoTypeEnable", type=str, default="false")
     #parser.add_argument("-binningAutoTypeThreshold", type=float, default="5")
