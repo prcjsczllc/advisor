@@ -9,8 +9,7 @@ sys.path.append("..")
 from utils.utils import readModelConfigStructure,trainEvalSplit,evalMetrics,setDefaultParams
 import pandas as np
 
-args = setDefaultParams()
-
+args = setDefaultParams().parse_args()
 
 def main():
 
@@ -25,7 +24,7 @@ def main():
     del args.trainDataPath
     del args.evalDataPath
     del args.metricInfo
-    del args.MLPackage
+    del args.Package
 
     # get path
     currentPath = os.getcwd()

@@ -57,7 +57,6 @@ class RunnerLauncher():
       study_name = self.run_config_dict["name"]
     study = client.get_or_create_study(study_name,
                                        self.run_config_dict["search_space"],
-                                       self.run_config_dict["search_space"]["metricInfo"],
                                        self.run_config_dict["algorithm"])
     metricInfo = self.run_config_dict["search_space"]["metricInfo"]
 

@@ -1,0 +1,92 @@
+{
+  "name": "shifuTest",
+  "algorithm": "BayesianOptimization",
+  "trialNumber": 20,
+  "concurrency": 1,
+  "path": "./advisor_client/examples/shifu/",
+  "command": "./run00.py",
+  "data":{
+      "targetColumnName":"SeriousDlqin2yrs",
+      "negTags":["0"],
+      "posTags":["1"],
+      "categoricalColumnNames":"",
+      "metaColumnNames":"",
+      "dataDelimiter":",",
+      "dataHeader":",",
+      "train":{
+          "trainDataPath":"/home/licliu/advisor/advisor_client/examples/data/givemesomecredit/trainData.csv",
+          "trainDataWeightColumnName":"",
+          "trainDataFilterExpressions": ""
+      },
+      "evals":{
+            "evalDataPath":"/home/licliu/advisor/advisor_client/examples/data/givemesomecredit/evalData.csv",
+            "evalDataWeightColumnName":"",
+            "performanceBucketNum":"100"
+      }
+  },
+  "search_space": {
+    "goal": "MAXIMIZE",
+    "metricInfo":"catch_rate,0.04",
+    "randomInitTrials": 5,
+    "maxTrials": 5,
+    "maxParallelTrials": 1,
+    "params": [
+      {
+        "parameterName": "LearningRate",
+        "type": "DOUBLE",
+        "minValue": 0.1,
+        "maxValue": 1,
+        "feasiblePoints": "",
+        "scalingType": "LINEAR"
+      },
+      {
+          "parameterName": "numTrainEpochs",
+          "type": "INTEGER",
+          "minValue": 200,
+          "maxValue": 500,
+          "feasiblePoints": "",
+          "scalingType": "LINEAR"
+      },
+      {
+        "parameterName": "NumHiddenNodes",
+        "type": "INTEGER",
+        "minValue": 10,
+        "maxValue": 30,
+        "feasiblePoints": "",
+        "scalingType": "LINEAR"
+      },
+      {
+        "parameterName": "ActivationFunc",
+        "type": "CATEGORICAL",
+        "minValue": 0,
+        "maxValue": 0,
+        "feasiblePoints": "Tanh,ReLU",
+        "scalingType": "LINEAR"
+      },
+      {
+        "parameterName": "binningMethod",
+        "type": "CATEGORICAL",
+        "minValue": 0,
+        "maxValue": 0,
+        "feasiblePoints": "EqualPositive,EqualTotal",
+        "scalingType": "LINEAR"
+      },
+      {
+        "parameterName": "filterBy",
+        "type": "CATEGORICAL",
+        "minValue": 0,
+        "maxValue": 0,
+        "feasiblePoints": "KS,IV",
+        "scalingType": "LINEAR"
+      },
+      {
+        "parameterName": "normType",
+        "type": "CATEGORICAL",
+        "minValue": 0,
+        "maxValue": 0,
+        "feasiblePoints": "ZSCALE,WOE_ZSCALE",
+        "scalingType": "LINEAR"
+      }
+    ]
+  }
+}

@@ -59,15 +59,10 @@ def evalMetrics(evalConfig,shifuJobPath,package,metricInfo):
                     metric = op["precision"]
     return metric
 
-def setDefaultParams():
+
+def setDefaultTuningParams():
     import argparse
     parser = argparse.ArgumentParser()
-    #info
-    parser.add_argument("-trialID",type=str,default = "0")
-    parser.add_argument("-studyName",type=str,default = "shifuJob")
-    parser.add_argument("-trainDataPath",type=str,default = "../data/givemesomecredit/cs-training.csv")
-    parser.add_argument("-evalDataPath",type=str,default = "")
-    parser.add_argument("-metricInfo",type=str,default = "auc")
     #stats
     parser.add_argument("-binningMethod", type=str, default="EqualPositive")
     parser.add_argument("-binningAlgorithm", type=str, default="SPDTI")
@@ -91,7 +86,7 @@ def setDefaultParams():
     #parser.add_argument("-baggingSampleRate", type=float, default="0.8")
     #parser.add_argument("-validSetRate", type=float, default="0.2")
     #parser.add_argument("-algorithm", type=str, default="NN")
-    parser.add_argument("-MLPackage", type=str, default="shifu")
+    parser.add_argument("-Package", type=str, default="shifu")
     parser.add_argument("-Loss",type=str,default = "Squared")
     # NN
     parser.add_argument("-LearningRate", type=float, default="0.1")
@@ -102,5 +97,41 @@ def setDefaultParams():
     # GBT
     #parser.add_argument("-MaxDepth", type=float, default=10)
     #parser.add_argument("-TreeNum", type=float, default=10)
-    args = parser.parse_args()
-    return args
+    return parser
+
+def setDefaultParams():
+    import argparse
+    parser = setDefaultTuningParams()
+    #info
+    parser.add_argument("-trialID",type=str,default = "0")
+    parser.add_argument("-studyName",type=str,default = "shifuJob")
+    parser.add_argument("-metricInfo",type=str,default = "catch_rate,0.02")
+    parser.add_argument("-trainDataPath",type=str,default = "../data/givemesomecredit/cs-training.csv")
+    parser.add_argument("-evalDataPath",type=str,default = "")
+    return parser
+
+def setParamsHadoop():
+    import argparse
+    parser =  setDefaultTuningParams()
+    #job
+    parser.add_argument("-trialID",type=str,default = "0")
+    parser.add_argument("-studyName",type=str,default = "shifuJob")
+    parser.add_argument("-metricInfo",type=str,default = "catch_rate,0.02")
+    #data
+    parser.add_argument("-targetColumnName",type=str,default = "")
+    parser.add_argument("-negTags",type=str,default = ["0"])
+    parser.add_argument("-posTags",type=str,default = ["1"])
+    parser.add_argument("-categoricalColumnNames",type=str,default = "")
+    parser.add_argument("-metaColumnNames",type=str,default = "")
+    parser.add_argument("-dataDelimiter",type=str,default = ",")
+    parser.add_argument("-dataHeader",type=str,default = "")
+    # train data
+    parser.add_argument("-trainDataPath",type=str,default = "")
+    parser.add_argument("-trainDataWeightColumnName",type=str,default = "")
+    parser.add_argument("-trainDataFilterExpressions",type=str,default = "")
+    # eval data
+    parser.add_argument("-evalDataPath",type=str,default = "")
+    parser.add_argument("-evalDataWeightColumnName",type=str,default = "")
+    parser.add_argument("-evalDataFilterExpressions",type=str,default = "")
+    parser.add_argument("-performanceBucketNum",type=str,default = "")
+    return parser
