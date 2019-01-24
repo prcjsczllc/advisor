@@ -75,8 +75,9 @@ class AdvisorClient(object):
 
     if response.ok:
       study = Study.from_dict(response.json()["data"])
-      trials = self.list_trials(study_name)
-      study.updated_time = trials[-1].updated_time
+      if study.status == "Completed":
+        trials = self.list_trials(study_name)
+        study.updated_time = trials[-1].updated_time
     return study
 
   def get_suggestions(self, study_name, trials_number=1):
@@ -93,12 +94,6 @@ class AdvisorClient(object):
         trials.append(trial)
 
     return trials
-
-  def update_study_time(self,study_name):
-    trials = self.list_trials(study_name)
-    study = self.get_study_by_name(study_name)
-    study.updated_time = trials[-1].updated_time
-    return study
 
   def is_study_done(self, study_name):
     study = self.get_study_by_name(study_name)

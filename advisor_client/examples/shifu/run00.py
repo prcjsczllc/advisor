@@ -16,7 +16,7 @@ def main():
 
     jobArgsList = ["trialID","studyName","metricInfo","targetColumnName","negTags","posTags","categoricalColumnNames","metaColumnNames","dataDelimiter","dataHeader",\
     "trainDataPath","trainDataWeightColumnName","trainDataFilterExpressions","evalDataPath","evalDataWeightColumnName","evalDataFilterExpressions","performanceBucketNum","Package"]
-    #get optimzation job info
+    #get optimzation info
     metricInfo=vars(args)["metricInfo"]
 
     # get path

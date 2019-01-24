@@ -56,8 +56,16 @@ class RunnerLauncher():
     study = client.get_or_create_study(study_name,
                                        self.run_config_dict["search_space"],
                                        self.run_config_dict["algorithm"])
-    dataInfo = self.run_config_dict["data"]
-    metricInfo = self.run_config_dict["search_space"]["metricInfo"]
+    #check whether data and metricinfo exists
+    if "data" in self.run_config_dict.keys():
+        dataInfo = self.run_config_dict["data"]
+    else:
+        dataInfo={}
+
+    if "metricInfo" in self.run_config_dict["search_space"].keys():
+        metricInfo = self.run_config_dict["search_space"]["metricInfo"]
+    else:
+        metricInfo={}
 
     logging.info("Create study: {}".format(study))
     logging.info("------------------------- Start Study -------------------------")
@@ -68,12 +76,9 @@ class RunnerLauncher():
       # Get suggested trials
       trials = client.get_suggestions(study.name, 1)
       logging.info("Get trial: {}".format(trials[0]))
-
-
       # Run training
       # generate parameters
       for trial in trials:
-
         parameters_dict = json.loads(trials[0].parameter_values)
         parameter_string = ""
 
@@ -90,14 +95,15 @@ class RunnerLauncher():
               parameter_string += " -{}={}".format(key, [value[0].encode("utf-8")])
             else:
               parameter_string += " -{}={}".format(key,value.encode("utf-8"))
+        print (parameter_string)
         if len(metricInfo)>0:
           parameter_string += " -{}={}".format("metricInfo",metricInfo)
 
         command_string = "cd {} && {} {} -studyName={} -trialID={}".format(
             self.run_config_dict["path"], self.run_config_dict["command"],
-            parameter_string,study.name,trials[0].id)
+            parameter_string,study.name,trial.id)
 
-        logging.info("Run the command: {}".format(command_string))
+        logging.info("Run the command: {},{}".format(command_string,i))
 
 
         # Example: '0.0\n'

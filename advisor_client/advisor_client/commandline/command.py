@@ -47,7 +47,7 @@ def print_studies(studies):
 def print_studies_as_table(studies):
   table = PrettyTable()
   table.field_names = [
-      "Id", "Name", "Configuration", "Status", "Create", "Updated"
+      "Id", "Name", "Configuration", "Status", "CreateTime", "FinishTime"
   ]
 
   for study in studies:
@@ -76,8 +76,8 @@ def print_trials(trials):
 def print_trials_as_table(trials):
   table = PrettyTable()
   table.field_names = [
-      "Id", "Study", "Name", "PARAMETER", "Objective", "Status", "Create",
-      "Updated"
+      "Id", "Study", "Name", "PARAMETER", "Objective", "Status", "CreateTime",
+      "FinishTime"
   ]
 
   for trial in trials:
@@ -103,7 +103,7 @@ def describe_studie(args):
   # Print study
   table = PrettyTable()
   table.field_names = [
-      "Id", "Name", "Algorithm", "Status", "Create", "Updated"
+      "Id", "Name", "Algorithm", "Status", "CreateTime", "UpdatedTime"
   ]
   table.add_row([
       study.id, study.name, study.algorithm, study.status,
