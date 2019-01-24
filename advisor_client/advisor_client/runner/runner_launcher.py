@@ -60,7 +60,7 @@ class RunnerLauncher():
     metricInfo = self.run_config_dict["search_space"]["metricInfo"]
 
     logging.info("Create study: {}".format(study))
-
+    logging.info("------------------------- Start Study -------------------------")
     for i in range(self.run_config_dict["trialNumber"]):
 
       logging.info("-------------------- Start Trial --------------------")
@@ -115,7 +115,8 @@ class RunnerLauncher():
         logging.info("Update the trial with metrics: {}".format(metric))
 
       logging.info("--------------------- End Trial ---------------------")
-
+    logging.info("------------------------- End Study -------------------------")
     is_done = client.is_study_done(study.name)
     best_trial = client.get_best_trial(study.name)
-    logging.info("The study: {}, best trial: {}".format(study, best_trial))
+    logging.info("The study: {}".format(study))
+    logging.info("Best trial is: {}".format(best_trial))

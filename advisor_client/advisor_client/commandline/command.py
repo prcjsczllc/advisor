@@ -23,6 +23,7 @@ import sys
 import pprint
 import json
 from prettytable import PrettyTable
+from datetime import datetime
 
 from advisor_client.client import AdvisorClient
 from advisor_client.runner.runner_launcher import RunnerLauncher
@@ -62,12 +63,14 @@ def print_trials(trials):
   print("{:16} {:16} {:16} {:16} {:16} {:16} {:32} {:32}".format(
       "ID", "STUDY", "NAME", "PARAMETER", "OBJECTIVE", "STATUS", "CREATED",
       "UPDATED"))
-
   for trial in trials:
     print("{:16} {:16} {:16} {:16} {:16} {:16} {:32} {:32}".format(
         trial.id, trial.study_name, trial.name, trial.parameter_values,
-        trial.objective_value, trial.status, trial.created_time,
-        trial.updated_time))
+        trial.objective_value, trial.status,
+        datetime.strptime(trial.created_time, '%d/%m/%Y %H:%M:%S'),
+        datetime.strptime(trial.updated_time, '%d/%m/%Y %H:%M:%S')
+        )
+        )
 
 
 def print_trials_as_table(trials):
@@ -80,8 +83,9 @@ def print_trials_as_table(trials):
   for trial in trials:
     table.add_row([
         trial.id, trial.study_name, trial.name, trial.parameter_values,
-        trial.objective_value, trial.status, trial.created_time,
-        trial.updated_time
+        trial.objective_value, trial.status,
+        datetime.strptime(trial.created_time, '%d/%m/%Y %H:%M:%S'),
+        datetime.strptime(trial.updated_time, '%d/%m/%Y %H:%M:%S')
     ])
   print(table)
 
@@ -94,6 +98,7 @@ def list_studies(args):
 def describe_studie(args):
   client = AdvisorClient()
   study = client.get_study_by_name(args.study_name)
+  best_trial = client.get_best_trial(args.study_name)
 
   # Print study
   table = PrettyTable()
@@ -101,11 +106,11 @@ def describe_studie(args):
       "Id", "Name", "Algorithm", "Status", "Create", "Updated"
   ]
   table.add_row([
-      study.id, study.name, study.algorithm, study.status, study.created_time,
-      study.updated_time
+      study.id, study.name, study.algorithm, study.status,
+      datetime.strptime(study.created_time, '%d/%m/%Y %H:%M:%S'),
+      datetime.strptime(study.updated_time, '%d/%m/%Y %H:%M:%S')
   ])
   print(table)
-
   # Print study configuration
   """
   table = PrettyTable()
@@ -114,6 +119,8 @@ def describe_studie(args):
   print(table)
   """
   pprint.pprint(json.loads(study.study_configuration))
+  #print best trial
+  print("Best trial is: " + str(best_trial))
 
   # Print related trials
   study_trials = client.list_trials(args.study_name)

@@ -1,7 +1,7 @@
 {
-  "name": "scikitlearn3",
+  "name": "scikitlearn-demo",
   "algorithm": "BayesianOptimization",
-  "trialNumber": 30,
+  "trialNumber": 10,
   "concurrency": 1,
   "path": "./advisor_client/examples/scikitlearn/",
   "command": "./mnist_classifier.py",
