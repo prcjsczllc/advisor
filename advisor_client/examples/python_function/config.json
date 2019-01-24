@@ -4,8 +4,10 @@
   "trialNumber": 10,
   "path": "./advisor_client/examples/python_function/",
   "command": "./min_function.py",
+  "data":"",
   "search_space": {
       "goal": "MINIMIZE",
+      "metricInfo":"",
       "randomInitTrials": 3,
       "params": [
           {

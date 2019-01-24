@@ -117,8 +117,7 @@ class AdvisorClient(object):
     return is_completed
 
   def list_trials(self, study_name):
-    url = "{}/suggestion/v1/studies/{}/trials".format(self.endpoint,
-                                                      study_name)
+    url = "{}/suggestion/v1/studies/{}/trials".format(self.endpoint, study_name)
     response = requests.get(url)
     trials = []
 

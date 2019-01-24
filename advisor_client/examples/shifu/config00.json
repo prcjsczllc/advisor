@@ -12,7 +12,7 @@
       "categoricalColumnNames":"",
       "metaColumnNames":"",
       "dataDelimiter":",",
-      "dataHeader":",",
+      "dataHeader":"",
       "train":{
           "trainDataPath":"/home/licliu/advisor/advisor_client/examples/data/givemesomecredit/trainData.csv",
           "trainDataWeightColumnName":"",

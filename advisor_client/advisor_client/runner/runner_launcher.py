@@ -25,12 +25,10 @@ coloredlogs.install(
 class RunnerLauncher():
   def __init__(self, run_file=None):
 
-    # Example: {u'name': u'simple1', u'algorithm': u'RandomSearch', u'runner': u'local_runner', u'search_space': {u'maxTrials': 5, u'params': [{u'scalingType': u'LINEAR', u'type': u'DOUBLE', u'maxValue': 0.01, u'minValue': 0.001, u'parameterName': u'gamma', u'feasiblePoints': u''}], u'randomInitTrials': 1, u'goal': u'MINIMIZE', u'maxParallelTrials': 1}, u'trialNumber':3, u'concurrency': 1, u'path': u'~/code/', u'command': u'python ./simple_function.py'}
     self.run_config_dict = {}
 
     if run_file:
         with open(run_file, "r") as f:
-
           if run_file.endswith(".json"):
             self.run_config_dict = json.load(f)
           elif run_file.endswith(".yml") or run_file.endswith(".yaml"):
@@ -58,6 +56,7 @@ class RunnerLauncher():
     study = client.get_or_create_study(study_name,
                                        self.run_config_dict["search_space"],
                                        self.run_config_dict["algorithm"])
+    dataInfo = self.run_config_dict["data"]
     metricInfo = self.run_config_dict["search_space"]["metricInfo"]
 
     logging.info("Create study: {}".format(study))
@@ -68,36 +67,36 @@ class RunnerLauncher():
 
       # Get suggested trials
       trials = client.get_suggestions(study.name, 1)
-      # print("debug: " + str(trials))
       logging.info("Get trial: {}".format(trials[0]))
 
-      #import ipdb;ipdb.set_trace()
-
-      # Generate parameters
-      parameter_value_dicts = []
-      for trial in trials:
-        parameter_value_dict = json.loads(trials[0].parameter_values)
-        # logging.info(
-        #     "The suggested parameters: {}".format(parameter_value_dict))
-        parameter_value_dicts.append(parameter_value_dict)
 
       # Run training
-
+      # generate parameters
       for trial in trials:
-        #metric = train_function(**parameter_value_dicts[i])
 
-        # Example: {"gamma": 0.0063987614450157415}
         parameters_dict = json.loads(trials[0].parameter_values)
         parameter_string = ""
 
+        # add search space parameters
         for k, v in parameters_dict.items():
           parameter_string += " -{}={}".format(k, v)
 
-        command_string = "cd {} && {} {} -metricInfo={} -studyName={} -trialID={}".format(
-            self.run_config_dict["path"], self.run_config_dict["command"],
-            parameter_string,metricInfo,study.name,trials[0].id)
+        if len(dataInfo)>0:
+          for key,value in dataInfo.items():
+            if key == "train" or key=="evals":
+              for key2,value2 in value.items():
+                parameter_string += " -{}={}".format(key2, value2.encode("utf-8"))
+            elif key == "negTags" or key =="posTags":
+              parameter_string += " -{}={}".format(key, [value[0].encode("utf-8")])
+            else:
+              parameter_string += " -{}={}".format(key,value.encode("utf-8"))
+        if len(metricInfo)>0:
+          parameter_string += " -{}={}".format("metricInfo",metricInfo)
 
-        #exit_code = subprocess.call(command_string, shell=True)
+        command_string = "cd {} && {} {} -studyName={} -trialID={}".format(
+            self.run_config_dict["path"], self.run_config_dict["command"],
+            parameter_string,study.name,trials[0].id)
+
         logging.info("Run the command: {}".format(command_string))
 
 

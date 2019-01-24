@@ -3,13 +3,15 @@
   "algorithm": "BayesianOptimization",
   "trialNumber": 30,
   "concurrency": 1,
-  "path": "./advisor_client/examples/scikitlearn_mnist/",
+  "path": "./advisor_client/examples/scikitlearn/",
   "command": "./mnist_classifier.py",
+  "data":"",
   "search_space": {
     "goal": "MINIMIZE",
     "randomInitTrials": 5,
     "maxTrials": 5,
     "maxParallelTrials": 1,
+    "metricInfo":"",
     "params": [
       {
         "parameterName": "gamma",

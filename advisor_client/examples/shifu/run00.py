@@ -10,6 +10,7 @@ from utils.utils import readModelConfigStructure,trainEvalSplit,evalMetrics,setP
 import pandas as np
 
 args = setParamsHadoop().parse_args()
+print(args)
 
 def main():
 
@@ -55,8 +56,8 @@ def main():
         modelConfig["dataSet"]["headerPath"] = vars(args)["dataHeader"]
         modelConfig["dataSet"]["headerDelimiter"] = vars(args)["dataDelimiter"]
         modelConfig["dataSet"]["targetColumnName"] = vars(args)["targetColumnName"]
-        modelConfig["dataSet"]["negTags"] = vars(args)["negTags"]
-        modelConfig["dataSet"]["posTags"] = vars(args)["posTags"]
+        modelConfig["dataSet"]["negTags"] = [str(vars(args)["negTags"][1:-1])]
+        modelConfig["dataSet"]["posTags"] = [str(vars(args)["posTags"][1:-1])]
 
         # eval data
         modelConfig["evals"][0]["dataSet"]["dataPath"] =  vars(args)["evalDataPath"]
@@ -64,8 +65,8 @@ def main():
         modelConfig["evals"][0]["dataSet"]["headerPath"] =  vars(args)["dataHeader"]
         modelConfig["evals"][0]["dataSet"]["headerDelimiter"] = vars(args)["dataDelimiter"]
         modelConfig["evals"][0]["dataSet"]["targetColumnName"] = vars(args)["targetColumnName"]
-        modelConfig["evals"][0]["dataSet"]["negTags"] = vars(args)["negTags"]
-        modelConfig["evals"][0]["dataSet"]["posTags"] = vars(args)["posTags"]
+        modelConfig["evals"][0]["dataSet"]["negTags"]= [str(vars(args)["negTags"][1:-1])]
+        modelConfig["evals"][0]["dataSet"]["posTags"] = [str(vars(args)["posTags"][1:-1])]
         modelConfig["evals"][0]["performanceBucketNum"] = "100"
 
         # training setting
