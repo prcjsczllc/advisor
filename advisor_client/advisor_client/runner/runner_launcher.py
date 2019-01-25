@@ -4,6 +4,7 @@ import logging
 import subprocess
 import coloredlogs
 import six
+import getpass
 
 from .abstract_runner import AbstractRunner
 from .local_runner import LocalRunner
@@ -40,7 +41,8 @@ class RunnerLauncher():
 
   def run(self):
     logging.info("Run with config: {}".format(self.run_config_dict))
-    client = AdvisorClient()
+    # add endpoint
+    client = AdvisorClient(None)
 
     # TODO: move the logic into local runner
     runner = LocalRunner()
@@ -49,10 +51,12 @@ class RunnerLauncher():
         runner = LocalRunner()
         logging.info("Run with local runner")
 
+    #get username
+    username = getpass.getuser()
     if six.PY2:
-      study_name = self.run_config_dict["name"].encode("utf-8")
+      study_name = str(self.run_config_dict["name"].encode("utf-8")) + "_" + username
     else:
-      study_name = self.run_config_dict["name"]
+      study_name = str(self.run_config_dict["name"]) + "_" + username
     study = client.get_or_create_study(study_name,
                                        self.run_config_dict["search_space"],
                                        self.run_config_dict["algorithm"])
@@ -103,7 +107,7 @@ class RunnerLauncher():
             self.run_config_dict["path"], self.run_config_dict["command"],
             parameter_string,study.name,trial.id)
 
-        logging.info("Run the command: {},{}".format(command_string,i))
+        logging.info("Run the command: {}".format(command_string))
 
 
         # Example: '0.0\n'
