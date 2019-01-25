@@ -15,7 +15,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#import argcomplete
 import argparse
 import logging
 import pkg_resources
@@ -142,10 +141,10 @@ def main():
   parser = argparse.ArgumentParser()
 
   parser.add_argument(
-      "-v",
+     "-v",
       "--version",
       action="version",
-      #version=pkg_resources.require("advisor")[0].version,
+    #  version=pkg_resources.require("advisor")[0].version,
       help="Display sdk version")
 
   main_subparser = parser.add_subparsers(dest="command_group", help="Commands")
