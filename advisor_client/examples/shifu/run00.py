@@ -119,11 +119,7 @@ def main():
     subprocess.call(["cd " + shifuJobPath + " && bash shifu train > train.log"],shell=True)
 
     # calculate the metrics
-    print (modelConfig["evals"][0])
-    print (shifuJobPath)
-    print (metricInfo)
-
-    metric = evalMetrics(evalConfig=modelConfig["evals"][0],shifuJobPath=shifuJobPath,package="shifu",metricInfo=metricInfo)
+    metric = evalMetrics(modelConfig=modelConfig,shifuJobPath=shifuJobPath,package="shifu",metricInfo=metricInfo)
     #change model name
     subprocess.call(["cd " + shifuJobPath + " && mv models/model0.nn ./modelLibrary/model_" + vars(args)["trialID"] + ".nn"],shell=True)
     subprocess.call(["cd " + shifuJobPath + " && mv ColumnConfig.json ./modelLibrary/ColumnConfig_" + vars(args)["trialID"] + ".json"],shell=True)

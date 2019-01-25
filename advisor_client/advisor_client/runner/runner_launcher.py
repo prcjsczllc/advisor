@@ -2,7 +2,7 @@ import json
 import yaml
 import logging
 import subprocess
-import coloredlogs
+#import coloredlogs
 import six
 import getpass
 
@@ -19,9 +19,8 @@ logging.basicConfig(
 logger = logging.getLogger("simple_tensorflow_serving")
 logger.setLevel(logging.DEBUG)
 
-coloredlogs.install(
-    level='DEBUG', logger=logger, fmt='%(asctime)s %(levelname)s %(message)s')
-
+# coloredlogs.install(
+#     level='DEBUG', logger=logger, fmt='%(asctime)s %(levelname)s %(message)s')
 
 class RunnerLauncher():
   def __init__(self, run_file=None):

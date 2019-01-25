@@ -1,5 +1,5 @@
 {
-  "name": "python-demo22",
+  "name": "python-demo",
   "algorithm": "BayesianOptimization",
   "trialNumber": 10,
   "path": "./advisor_client/examples/python_function/",

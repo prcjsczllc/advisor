@@ -40,12 +40,14 @@ def trainEvalSplit(inputFilePath, outputPath, testRatio,delimiter):
     evalDF.to_csv(outputPath + "/evalData.csv",index = False,sep=delimiter)
     return outputPath + "/trainData.csv",outputPath + "/evalData.csv"
 
-def evalMetrics(evalConfig,shifuJobPath,package,metricInfo):
+def evalMetrics(modelConfig,shifuJobPath,package,metricInfo):
     import json
     import subprocess
     metric = 0
     if package == "shifu":
-        subprocess.call(["cd " + shifuJobPath + " && bash shifu eval > eval.log"],shell=True)
+        subprocess.call(["cd " + shifuJobPath + " && bash shifu eval > eval.log"],shell=True
+        if modelConfig["basic"]["runMode"] <> "LOCAL":
+            subprocess.call(["cd " + shifuJobPath + "evals/Eval1/" + " && hadoop fs -get " + modelConfig["basic"]["customPaths"][1:-1] + "/ModelSets/" + modelConfig["basic"]["name"] + "/evals/Eval1/EvalPerformance.json ." ] )
         with open(shifuJobPath + "/evals/Eval1/EvalPerformance.json") as f:
             evals = json.loads(f.read())
         if metricInfo == "auc":
@@ -58,7 +60,6 @@ def evalMetrics(evalConfig,shifuJobPath,package,metricInfo):
                 if abs(op["actionRate"] - float(metricInfo.split(",")[1]))<10E-6:
                     metric = op["precision"]
     return metric
-
 
 def setDefaultTuningParams():
     import argparse
