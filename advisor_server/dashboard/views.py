@@ -165,10 +165,10 @@ def v1_study(request, study_name):
       opt_id, opt_val = trials[0]['id'], trials[0]['objective_value']
       seqs, opt_vals = [trials[0]['seq']], [trials[0]['objective_value']]
       for t in trials[1:]:
-          if goal.upper() == 'MINIMIZE' and t['objective_value'] and t['objective_value'] < opt_val:
+          if goal.upper() == 'MINIMIZE' and t['objective_value'] and opt_val and t['objective_value'] < opt_val:
             opt_id = t['id']
             opt_val = t['objective_value']
-          if goal.upper() == 'MAXIMIZE' and t['objective_value'] and t['objective_value'] > opt_val:
+          if goal.upper() == 'MAXIMIZE' and t['objective_value'] and opt_val and t['objective_value'] > opt_val:
             opt_id = t['id']
             opt_val = t['objective_value']
           if t['objective_value']:
