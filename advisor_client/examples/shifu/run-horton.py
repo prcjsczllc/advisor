@@ -7,7 +7,6 @@ import os
 import sys
 sys.path.append("..")
 from utils.utils import readModelConfigStructure,trainEvalSplit,evalMetrics,setParamsHadoop
-import pandas as np
 
 args = setParamsHadoop().parse_args()
 print(args)
@@ -27,6 +26,9 @@ def main():
     #shifu job path
     shifuJobPath = currentPath + "/" + shifuJobName
     subprocess.call(["cd " + currentPath + " && shifu new " + shifuJobName],shell=True)
+    if not os.path.isdir( shifuJobPath + "/modelLibrary"):
+        subprocess.call(["mkdir " + shifuJobPath + "/modelLibrary"],shell=True)
+
     # Change model config
     with open(shifuJobPath + "/ModelConfig.json","r+") as modelConfigFile:
         modelConfig = json.loads(modelConfigFile.read())

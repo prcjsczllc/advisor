@@ -45,20 +45,41 @@ def evalMetrics(modelConfig,shifuJobPath,package,metricInfo):
     import subprocess
     metric = 0
     if package == "shifu":
-        subprocess.call(["cd " + shifuJobPath + " && bash shifu eval > eval.log"],shell=True
+        subprocess.call(["cd " + shifuJobPath + " && bash shifu eval > eval.log"],shell=True)
         if modelConfig["basic"]["runMode"] <> "LOCAL":
-            subprocess.call(["cd " + shifuJobPath + "evals/Eval1/" + " && hadoop fs -get " + modelConfig["basic"]["customPaths"][1:-1] + "/ModelSets/" + modelConfig["basic"]["name"] + "/evals/Eval1/EvalPerformance.json ." ] )
+            subprocess.call(["cd " + shifuJobPath + "/evals/Eval1/" + " && hadoop fs -get " + str(modelConfig["basic"]["customPaths"])[1:-1] + "ModelSets/" + modelConfig["basic"]["name"] + "/evals/Eval1/EvalPerformance.json ." ],shell=True )
         with open(shifuJobPath + "/evals/Eval1/EvalPerformance.json") as f:
             evals = json.loads(f.read())
         if metricInfo == "auc":
             metric = evals["areaUnderRoc"]
-        elif metricInfo.split(",")[0]=="catch_rate":
+        elif metricInfo.split(",")[1]=="actionRate":
             for op in evals["gains"]:
-                if abs(op["actionRate"] - float(metricInfo.split(",")[1]))<10E-6:
-                    metric = op["recall"]
-        elif metricInfo.split(",")[0]=="hit_rate":
-                if abs(op["actionRate"] - float(metricInfo.split(",")[1]))<10E-6:
-                    metric = op["precision"]
+                if metricInfo.split(",")[0] == "catchRate":
+                    if abs(op["actionRate"] - float(metricInfo.split(",")[2]))<10E-6:
+                        metric = op["recall"]
+                elif metricInfo.split(",")[0]=="hitRate":
+                        if abs(op["actionRate"] - float(metricInfo.split(",")[2]))<10E-6:
+                            metric = op["precision"]
+                elif metricInfo.split(",")[0]=="weightedCatchRate":
+                        if abs(op["actionRate"] - float(metricInfo.split(",")[2]))<10E-6:
+                            metric = op["weightedRecall"]
+                elif metricInfo.split(",")[0]=="weightedHitRate":
+                        if abs(op["actionRate"] - float(metricInfo.split(",")[2]))<10E-6:
+                            metric = op["weightedPrecision"]
+        elif metricInfo.split(",")[1]=="weightedActionRate":
+            for op in evals["gains"]:
+                if metricInfo.split(",")[0] == "catchRate":
+                    if abs(op["actionRate"] - float(metricInfo.split(",")[2]))<10E-6:
+                        metric = op["recall"]
+                elif metricInfo.split(",")[0]=="hitRate":
+                        if abs(op["actionRate"] - float(metricInfo.split(",")[2]))<10E-6:
+                            metric = op["precision"]
+                elif metricInfo.split(",")[0]=="weightedCatchRate":
+                        if abs(op["actionRate"] - float(metricInfo.split(",")[2]))<10E-6:
+                            metric = op["weightedRecall"]
+                elif metricInfo.split(",")[0]=="weightedHitRate":
+                        if abs(op["actionRate"] - float(metricInfo.split(",")[2]))<10E-6:
+                            metric = op["weightedPrecision"]
     return metric
 
 def setDefaultTuningParams():
@@ -106,7 +127,7 @@ def setDefaultParams():
     #info
     parser.add_argument("-trialID",type=str,default = "0")
     parser.add_argument("-studyName",type=str,default = "shifuJob")
-    parser.add_argument("-metricInfo",type=str,default = "catch_rate,0.02")
+    parser.add_argument("-metricInfo",type=str,default = "catchRate,actionRate,0.02")
     parser.add_argument("-trainDataPath",type=str,default = "../data/givemesomecredit/cs-training.csv")
     parser.add_argument("-evalDataPath",type=str,default = "")
     return parser
@@ -117,7 +138,7 @@ def setParamsHadoop():
     #job
     parser.add_argument("-trialID",type=str,default = "0")
     parser.add_argument("-studyName",type=str,default = "shifuJob")
-    parser.add_argument("-metricInfo",type=str,default = "catch_rate,0.02")
+    parser.add_argument("-metricInfo",type=str,default = "catchRate,actionRate,0.02")
     #data
     parser.add_argument("-targetColumnName",type=str,default = "")
     parser.add_argument("-negTags",type=str,default = ["0"])
