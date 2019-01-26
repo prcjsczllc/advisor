@@ -79,7 +79,7 @@ def print_trials_as_table(trials):
       "FinishTime"
   ]
 
-  for trial in trials:
+  for trial in trials: 
     table.add_row([
         trial.seq, trial.study_name, trial.name, trial.parameter_values,
         trial.objective_value, trial.status,
