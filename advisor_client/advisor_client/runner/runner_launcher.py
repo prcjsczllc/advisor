@@ -5,6 +5,7 @@ import subprocess
 #import coloredlogs
 import six
 import getpass
+import os
 
 from .abstract_runner import AbstractRunner
 from .local_runner import LocalRunner
@@ -99,12 +100,11 @@ class RunnerLauncher():
               parameter_string += " -{}={}".format(key, [value[0].encode("utf-8")])
             else:
               parameter_string += " -{}={}".format(key,value.encode("utf-8"))
-        print (parameter_string)
         if len(metricInfo)>0:
           parameter_string += " -{}={}".format("metricInfo",metricInfo)
 
-        command_string = "cd {} && {} {} -studyName={} -trialID={}".format(
-            self.run_config_dict["path"], self.run_config_dict["command"],
+        command_string = "{} {} -studyName={} -trialID={}".format(
+            "/home/licliu/advisor/advisor_client/examples/" + self.run_config_dict["package"]+ "/run.py",
             parameter_string,study.name,trial.id)
 
         logging.info("Run the command: {}".format(command_string))

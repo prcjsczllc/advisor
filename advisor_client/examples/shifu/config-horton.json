@@ -3,8 +3,7 @@
   "algorithm": "BayesianOptimization",
   "trialNumber": 10,
   "concurrency": 1,
-  "path": "./advisor_client/examples/shifu/",
-  "command": "./run-horton.py",
+  "package": "shifu",
   "data":{
       "targetColumnName":"SeriousDlqin2yrs",
       "negTags":["0"],

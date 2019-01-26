@@ -90,6 +90,7 @@ class AdvisorClient(object):
     if response.ok:
       dicts = response.json()["data"]
       for dict in dicts:
+        print(dict)
         trial = Trial.from_dict(dict)
         trials.append(trial)
 

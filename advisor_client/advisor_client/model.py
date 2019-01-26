@@ -46,12 +46,12 @@ class Trial(object):
                parameter_values=None,
                objective_value=None,
                id=None,
-               seq=None,
+               # seq=None,
                status=None,
                created_time=None,
                updated_time=None):
     self.id = id
-    self.seq=seq
+    # self.seq=seq
     if six.PY2:
       self.study_name = study_name.encode("utf-8")
     else:
@@ -65,8 +65,9 @@ class Trial(object):
 
   def __str__(self):
     return "Id: {}, study_name: {}, name: {}, parameter_values: {}, objective_value: {}".format(
-        self.id, self.study_name, self.name, self.parameter_values,
-        self.objective_value)
+        # self.seq,
+        self.id,
+        self.study_name, self.name, self.parameter_values,self.objective_value)
 
   def to_dict(self):
     return {"study_name": self.study_name, "name": self.name}
@@ -74,7 +75,9 @@ class Trial(object):
   @classmethod
   def from_dict(self, dict):
     return Trial(dict["study_name"], dict["name"], dict["parameter_values"],
-                 dict["objective_value"], dict["id"],dict["seq"],dict["status"],
+                 dict["objective_value"], dict["id"]
+                 # ,dict["seq"]
+                 ,dict["status"],
                  dict["created_time"], dict["updated_time"])
 
 

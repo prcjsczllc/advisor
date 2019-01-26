@@ -5,51 +5,30 @@ import subprocess
 import json
 import os
 import sys
-sys.path.append("..")
-from utils.utils import readModelConfigStructure,trainEvalSplit,evalMetrics,setDefaultParams
-import pandas as np
+currentPath = os.getcwd()
+sys.path.append("/home/licliu/advisor/advisor_client/examples/")
+from utils.utils import readModelConfigStructure,trainEvalSplit,evalMetrics,setParamsHadoop
 
-args = setDefaultParams().parse_args()
+args = setParamsHadoop().parse_args()
 
 def main():
 
-    #get optimzation job info
-    studyName=vars(args)["studyName"]
-    trialID=vars(args)["trialID"]
-    trainDataPath=vars(args)["trainDataPath"]
-    evalDataPath = vars(args)["evalDataPath"]
+    jobArgsList = ["trialID","studyName","metricInfo","targetColumnName","negTags","posTags","categoricalColumnNames","metaColumnNames","dataDelimiter","dataHeader",\
+    "trainDataPath","trainDataWeightColumnName","trainDataFilterExpressions","evalDataPath","evalDataWeightColumnName","evalDataFilterExpressions","performanceBucketNum","Package"]
+    #get optimzation info
     metricInfo=vars(args)["metricInfo"]
-    del args.studyName
-    del args.trialID
-    del args.trainDataPath
-    del args.evalDataPath
-    del args.metricInfo
-    del args.Package
 
     # get path
     currentPath = os.getcwd()
 
     # create a shifu job
-    shifuJobName = studyName
+    shifuJobName = vars(args)["studyName"]
     #shifu job path
     shifuJobPath = currentPath + "/" + shifuJobName
+    print(shifuJobPath)
     subprocess.call(["cd " + currentPath + " && shifu new " + shifuJobName],shell=True)
     if not os.path.isdir( shifuJobPath + "/modelLibrary"):
         subprocess.call(["mkdir " + shifuJobPath + "/modelLibrary"],shell=True)
-
-    # split data to train and test
-    if evalDataPath == "":
-        if not os.path.exists(shifuJobPath + '/evalData.csv') or not os.path.exists(shifuJobPath + '/evalData.csv'):
-            trainDataPath, evalDataPath = trainEvalSplit(trainDataPath, shifuJobPath, 0.2,",")
-        else:
-            trainDataPath = shifuJobPath + '/trainData.csv'
-            evalDataPath = shifuJobPath + '/evalData.csv'
-    else:
-        if not os.path.exists(shifuJobPath + '/evalData.csv') or not os.path.exists(shifuJobPath + '/evalData.csv'):
-            subprocess.call(["cp " + trainDataPath + " " + shifuJobPath + '/trainData.csv'],shell=True)
-            subprocess.call(["cp " + evalDataPath +  " " + shifuJobPath + '/evalData.csv'],shell=True)
-            trainDataPath = shifuJobPath + '/trainData.csv'
-            evalDataPath = shifuJobPath + '/evalData.csv'
 
     # Change model config
     with open(shifuJobPath + "/ModelConfig.json","r+") as modelConfigFile:
@@ -58,22 +37,22 @@ def main():
 
         # change job info
         # train data
-        modelConfig["dataSet"]["dataPath"] = trainDataPath
-        modelConfig["dataSet"]["dataDelimiter"] = ","
-        modelConfig["dataSet"]["headerPath"] = ""
-        modelConfig["dataSet"]["headerDelimiter"] = ","
-        modelConfig["dataSet"]["targetColumnName"] = "SeriousDlqin2yrs"
-        modelConfig["dataSet"]["negTags"] = ["0"]
-        modelConfig["dataSet"]["posTags"] = ["1"]
+        modelConfig["dataSet"]["dataPath"] = vars(args)["trainDataPath"]
+        modelConfig["dataSet"]["dataDelimiter"] = vars(args)["dataDelimiter"]
+        modelConfig["dataSet"]["headerPath"] = vars(args)["dataHeader"]
+        modelConfig["dataSet"]["headerDelimiter"] = vars(args)["dataDelimiter"]
+        modelConfig["dataSet"]["targetColumnName"] = vars(args)["targetColumnName"]
+        modelConfig["dataSet"]["negTags"] = [str(vars(args)["negTags"][1:-1])]
+        modelConfig["dataSet"]["posTags"] = [str(vars(args)["posTags"][1:-1])]
 
         # eval data
-        modelConfig["evals"][0]["dataSet"]["dataPath"] =  evalDataPath
-        modelConfig["evals"][0]["dataSet"]["dataDelimiter"] = ","
-        modelConfig["evals"][0]["dataSet"]["headerPath"] = ""
-        modelConfig["evals"][0]["dataSet"]["headerDelimiter"] = ","
-        modelConfig["evals"][0]["dataSet"]["targetColumnName"] = "SeriousDlqin2yrs"
-        modelConfig["evals"][0]["dataSet"]["negTags"] = ["0"]
-        modelConfig["evals"][0]["dataSet"]["posTags"] = ["1"]
+        modelConfig["evals"][0]["dataSet"]["dataPath"] =  vars(args)["evalDataPath"]
+        modelConfig["evals"][0]["dataSet"]["dataDelimiter"] = vars(args)["dataDelimiter"]
+        modelConfig["evals"][0]["dataSet"]["headerPath"] =  vars(args)["dataHeader"]
+        modelConfig["evals"][0]["dataSet"]["headerDelimiter"] = vars(args)["dataDelimiter"]
+        modelConfig["evals"][0]["dataSet"]["targetColumnName"] = vars(args)["targetColumnName"]
+        modelConfig["evals"][0]["dataSet"]["negTags"]= [str(vars(args)["negTags"][1:-1])]
+        modelConfig["evals"][0]["dataSet"]["posTags"] = [str(vars(args)["posTags"][1:-1])]
         modelConfig["evals"][0]["performanceBucketNum"] = "100"
 
         # training setting
@@ -81,8 +60,10 @@ def main():
 
         # assign arguements
         for arg, value in vars(args).items():
+            if arg in jobArgsList:
+                continue
             # stats
-            if modelConfigStructure[arg] == "stats":
+            elif modelConfigStructure[arg] == "stats":
                 modelConfig["stats"][arg] = value
 
             # normalize
@@ -124,14 +105,11 @@ def main():
     subprocess.call(["cd " + shifuJobPath + " && bash shifu train > train.log"],shell=True)
 
     # calculate the metrics
-    print (modelConfig["evals"][0])
-    print (shifuJobPath)
-    print (metricInfo)
 
-    metric = evalMetrics(evalConfig=modelConfig["evals"][0],shifuJobPath=shifuJobPath,package="shifu",metricInfo=metricInfo)
+    metric = evalMetrics(modelConfig=modelConfig,shifuJobPath=shifuJobPath,package="shifu",metricInfo=metricInfo)
     #change model name
-    subprocess.call(["cd " + shifuJobPath + " && mv models/model0.nn ./modelLibrary/model_" + trialID + ".nn"],shell=True)
-    subprocess.call(["cd " + shifuJobPath + " && mv ColumnConfig.json ./modelLibrary/ColumnConfig_" + trialID + ".json"],shell=True)
+    subprocess.call(["cd " + shifuJobPath + " && mv models/model0.nn ./modelLibrary/model_" + vars(args)["trialID"] + ".nn"],shell=True)
+    subprocess.call(["cd " + shifuJobPath + " && mv ColumnConfig.json ./modelLibrary/ColumnConfig_" + vars(args)["trialID"] + ".json"],shell=True)
     print(metric)
 
 if __name__ == "__main__":

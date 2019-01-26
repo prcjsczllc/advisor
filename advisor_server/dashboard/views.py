@@ -128,7 +128,7 @@ def v1_run_study(request):
     os.write(new_file, json.dumps(run_config).encode())
     os.close(new_file)
 
-    p = subprocess.Popen([os.getcwd() + "/../advisor_client/advisor_client/commandline/command.py",
+    p = subprocess.Popen([os.getcwd() + "/../advisor_client/advisor_client/commandline/optimizer.py",
         "run", "-f", filename], stderr=subprocess.STDOUT, text=True)
     #print(p.returncode)
     #print(p.stdout)

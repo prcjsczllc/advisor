@@ -10,7 +10,6 @@ from utils.utils import readModelConfigStructure,trainEvalSplit,evalMetrics,setP
 import pandas as np
 
 args = setParamsHadoop().parse_args()
-print(args)
 
 def main():
 

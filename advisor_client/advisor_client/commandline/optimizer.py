@@ -32,7 +32,6 @@ logging.basicConfig(level=logging.DEBUG)
 logging.getLogger("requests").setLevel(logging.WARNING)
 logging.getLogger("urllib3").setLevel(logging.WARNING)
 
-
 def print_studies(studies):
   print("{:16} {:16} {:16} {:16} {:32} {:32}".format(
       "ID", "NAME", "CONFIGURATION", "STATUS", "CREATED", "UPDATED"))
@@ -79,9 +78,11 @@ def print_trials_as_table(trials):
       "FinishTime"
   ]
 
-  for trial in trials: 
+  for trial in trials:
     table.add_row([
-        trial.seq, trial.study_name, trial.name, trial.parameter_values,
+        # trial.seq,
+        trial.id,
+        trial.study_name, trial.name, trial.parameter_values,
         trial.objective_value, trial.status,
         datetime.strptime(trial.created_time, '%d/%m/%Y %H:%M:%S'),
         datetime.strptime(trial.updated_time, '%d/%m/%Y %H:%M:%S')

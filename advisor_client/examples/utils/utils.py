@@ -47,6 +47,7 @@ def evalMetrics(modelConfig,shifuJobPath,package,metricInfo):
     if package == "shifu":
         subprocess.call(["cd " + shifuJobPath + " && bash shifu eval > eval.log"],shell=True)
         if modelConfig["basic"]["runMode"] <> "LOCAL":
+            subprocess.call(["rm " + shifuJobPath + "/evals/Eval1/EvalPerformance.json"],shell=True )
             subprocess.call(["cd " + shifuJobPath + "/evals/Eval1/" + " && hadoop fs -get " + str(modelConfig["basic"]["customPaths"])[1:-1] + "ModelSets/" + modelConfig["basic"]["name"] + "/evals/Eval1/EvalPerformance.json ." ],shell=True )
         with open(shifuJobPath + "/evals/Eval1/EvalPerformance.json") as f:
             evals = json.loads(f.read())

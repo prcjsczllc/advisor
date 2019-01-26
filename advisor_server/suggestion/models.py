@@ -65,7 +65,7 @@ class Trial(models.Model):
   updated_time = models.DateTimeField(auto_now=True)
 
   def __str__(self):
-    return "{}-{}".format(self.id, self.name)
+    return "{}-{}".format(self.id,self.name)
 
   @classmethod
   def create(cls, study_name, name):
