@@ -81,7 +81,7 @@ def print_trials_as_table(trials):
 
   for trial in trials:
     table.add_row([
-        trial.id, trial.study_name, trial.name, trial.parameter_values,
+        trial.seq, trial.study_name, trial.name, trial.parameter_values,
         trial.objective_value, trial.status,
         datetime.strptime(trial.created_time, '%d/%m/%Y %H:%M:%S'),
         datetime.strptime(trial.updated_time, '%d/%m/%Y %H:%M:%S')
