@@ -144,8 +144,8 @@ def setParamsHadoop():
     parser.add_argument("-targetColumnName",type=str,default = "")
     parser.add_argument("-negTags",type=str,default = ["0"])
     parser.add_argument("-posTags",type=str,default = ["1"])
-    parser.add_argument("-categoricalColumnNames",type=str,default = "")
-    parser.add_argument("-metaColumnNames",type=str,default = "")
+    parser.add_argument("-categoricalColumnNameFile",type=str,default = "")
+    parser.add_argument("-metaColumnNameFile",type=str,default = "")
     parser.add_argument("-dataDelimiter",type=str,default = ",")
     parser.add_argument("-dataHeader",type=str,default = "")
     # train data

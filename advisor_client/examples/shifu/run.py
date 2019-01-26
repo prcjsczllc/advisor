@@ -44,6 +44,8 @@ def main():
         modelConfig["dataSet"]["targetColumnName"] = vars(args)["targetColumnName"]
         modelConfig["dataSet"]["negTags"] = [str(vars(args)["negTags"][1:-1])]
         modelConfig["dataSet"]["posTags"] = [str(vars(args)["posTags"][1:-1])]
+        modelConfig["dataset"]["categoricalColumnNameFile"]= vars(args)["categoricalColumnNameFile"]
+        modelConfig["dataset"]["metaColumnNameFile"]= vars(args)["metaColumnNameFile"]
 
         # eval data
         modelConfig["evals"][0]["dataSet"]["dataPath"] =  vars(args)["evalDataPath"]
