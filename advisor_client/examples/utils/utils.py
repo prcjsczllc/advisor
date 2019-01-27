@@ -1,27 +1,28 @@
-def readModelConfigStructure(modelConfig):
-    d = dict()
-    for key in modelConfig.keys():
-        if key == "train":
-            for key2, value2 in modelConfig[key].items():
-                if key2 == "params":
-                    for key3,value3 in value2.items():
-                        d[key3]= {key2:0}
-                        d[key3][key2] = "train"
-                    else:
-                        d[key2] = "train"
-                else:
-                    d[key2] = "train"
-        elif key =="normalize":
-            for key2 in modelConfig[key].keys():
-                d[key2] = "normalize"
-        elif key =="stats":
-            for key2 in modelConfig[key].keys():
-                d[key2] = "stats"
-        elif key =="varSelect":
-            for key2 in modelConfig[key].keys():
-                d[key2] = "varSelect"
-    d["Loss"]="train"
-    return d
+def readModelConfigStructure():
+    # d = dict()
+    # for key in modelConfig.keys():
+    #     if key == "train":
+    #         for key2, value2 in modelConfig[key].items():
+    #             if key2 == "params":
+    #                 for key3,value3 in value2.items():
+    #                     d[key3]= {key2:0}
+    #                     d[key3][key2] = "train"
+    #                 else:
+    #                     d[key2] = "train"
+    #             else:
+    #                 d[key2] = "train"
+    #     elif key =="normalize":
+    #         for key2 in modelConfig[key].keys():
+    #             d[key2] = "normalize"
+    #     elif key =="stats":
+    #         for key2 in modelConfig[key].keys():
+    #             d[key2] = "stats"
+    #     elif key =="varSelect":
+    #         for key2 in modelConfig[key].keys():
+    #             d[key2] = "varSelect"
+    # d["Loss"]="train"
+    # return d
+    return
 
 def trainEvalSplit(inputFilePath, outputPath, testRatio,delimiter):
     import pandas as pd
@@ -89,9 +90,9 @@ def setDefaultTuningParams():
     #stats
     parser.add_argument("-binningMethod", type=str, default="EqualPositive")
     parser.add_argument("-binningAlgorithm", type=str, default="SPDTI")
-    #parser.add_argument("-binningAutoTypeEnable", type=str, default="false")
-    #parser.add_argument("-binningAutoTypeThreshold", type=float, default="5")
-    #parser.add_argument("-binningMergeEnable", type=str, default="true")
+    # parser.add_argument("-binningAutoTypeEnable", type=str, default="false")
+    # parser.add_argument("-binningAutoTypeThreshold", type=float, default="5")
+    # parser.add_argument("-binningMergeEnable", type=str, default="true")
     parser.add_argument("-maxNumBin", type=int, default="10")
     parser.add_argument("-sampleRate", type=float, default="0.8")
     #parser.add_argument("-sampleNegOnly", type=str, default="false")
@@ -109,7 +110,7 @@ def setDefaultTuningParams():
     #parser.add_argument("-baggingSampleRate", type=float, default="0.8")
     #parser.add_argument("-validSetRate", type=float, default="0.2")
     #parser.add_argument("-algorithm", type=str, default="NN")
-    parser.add_argument("-Package", type=str, default="shifu")
+    parser.add_argument("-package", type=str, default="shifu")
     parser.add_argument("-Loss",type=str,default = "Squared")
     # NN
     parser.add_argument("-LearningRate", type=float, default="0.1")
@@ -117,6 +118,7 @@ def setDefaultTuningParams():
     parser.add_argument("-NumHiddenLayers", type=int, default="1")
     parser.add_argument("-NumHiddenNodes", type=int, default="10")
     parser.add_argument("-numTrainEpochs",type=int,default="100")
+    parser.add_argument("-Propagation",type=str,default="R")
     # GBT
     #parser.add_argument("-MaxDepth", type=float, default=10)
     #parser.add_argument("-TreeNum", type=float, default=10)
@@ -140,21 +142,25 @@ def setParamsHadoop():
     parser.add_argument("-trialID",type=str,default = "0")
     parser.add_argument("-studyName",type=str,default = "shifuJob")
     parser.add_argument("-metricInfo",type=str,default = "catchRate,actionRate,0.02")
-    #data
-    parser.add_argument("-targetColumnName",type=str,default = "")
-    parser.add_argument("-negTags",type=str,default = ["0"])
-    parser.add_argument("-posTags",type=str,default = ["1"])
-    parser.add_argument("-categoricalColumnNameFile",type=str,default = "")
-    parser.add_argument("-metaColumnNameFile",type=str,default = "")
-    parser.add_argument("-dataDelimiter",type=str,default = ",")
-    parser.add_argument("-dataHeader",type=str,default = "")
-    # train data
-    parser.add_argument("-trainDataPath",type=str,default = "")
-    parser.add_argument("-trainDataWeightColumnName",type=str,default = "")
-    parser.add_argument("-trainDataFilterExpressions",type=str,default = "")
-    # eval data
-    parser.add_argument("-evalDataPath",type=str,default = "")
-    parser.add_argument("-evalDataWeightColumnName",type=str,default = "")
-    parser.add_argument("-evalDataFilterExpressions",type=str,default = "")
-    parser.add_argument("-performanceBucketNum",type=str,default = "")
+    parser.add_argument("-useStats",type=str,default = "true")
+    parser.add_argument("-useNormalizedData",type=str,default = "true")
+    parser.add_argument("-useVariable",type=str,default = "true")
+    # parser.add_argument("-customPaths",type=str,default = "")
+    # #data
+    # parser.add_argument("-targetColumnName",type=str,default = "")
+    # parser.add_argument("-negTags",type=str,default = ["0"])
+    # parser.add_argument("-posTags",type=str,default = ["1"])
+    # parser.add_argument("-categoricalColumnNameFile",type=str,default = "")
+    # parser.add_argument("-metaColumnNameFile",type=str,default = "")
+    # parser.add_argument("-dataDelimiter",type=str,default = ",")
+    # parser.add_argument("-dataHeader",type=str,default = "")
+    # # train data
+    # parser.add_argument("-trainDataPath",type=str,default = "")
+    # parser.add_argument("-trainDataWeightColumnName",type=str,default = "")
+    # parser.add_argument("-trainDataFilterExpressions",type=str,default = "")
+    # # eval data
+    # parser.add_argument("-evalDataPath",type=str,default = "")
+    # parser.add_argument("-evalDataWeightColumnName",type=str,default = "")
+    # parser.add_argument("-evalDataFilterExpressions",type=str,default = "")
+    # parser.add_argument("-performanceBucketNum",type=str,default = "")
     return parser

@@ -1,0 +1,99 @@
+{
+  "name": "cam15",
+  "algorithm": "BayesianOptimization",
+  "trialNumber": 100,
+  "concurrency": 1,
+  "package": "shifu",
+  "data":{
+      "targetColumnName":"is_cc_bad",
+      "negTags":["0"],
+      "posTags":["1"],
+      "categoricalColumnNameFile":"/risk_crm11/licliu/test/categorical",
+      "metaColumnNameFile":"/risk_crm11/licliu/test/meta",
+      "dataDelimiter":"'|'",
+      "dataHeader":"/user/pengzhang/cam2015/header",
+      "train":{
+          "trainDataPath":"/user/pengzhang/cam2015/rawtrain",
+          "trainDataWeightColumnName":"cg_dol_wgt",
+          "trainDataFilterExpressions": ""
+      },
+      "evals":{
+            "evalDataPath":"/user/pengzhang/cam2015/newtest-marnew",
+            "evalDataWeightColumnName":"cg_dol_wgt",
+            "performanceBucketNum":"100"
+      }
+  },
+ "search_space": {
+    "goal": "MAXIMIZE",
+    "metricInfo":"weightedCatchRate,weightedActionRate,0.06",
+    "randomInitTrials": 5,
+    "maxTrials": 5,
+    "maxParallelTrials": 1,
+    "params": [
+      {
+        "parameterName": "LearningRate",
+        "type": "DOUBLE",
+        "minValue": 0.1,
+        "maxValue": 3,
+        "feasiblePoints": "",
+        "scalingType": "LINEAR"
+      },
+      {
+          "parameterName": "numTrainEpochs",
+          "type": "INTEGER",
+          "minValue": 500,
+          "maxValue": 1000,
+          "feasiblePoints": "",
+          "scalingType": "LINEAR"
+      },
+      {
+        "parameterName": "NumHiddenNodes",
+        "type": "INTEGER",
+        "minValue": 20,
+        "maxValue": 50,
+        "feasiblePoints": "",
+        "scalingType": "LINEAR"
+      },
+      {
+        "parameterName": "Propagation",
+        "type": "CATEGORICAL",
+        "minValue": 0,
+        "maxValue": 0,
+        "feasiblePoints": "R,Q",
+        "scalingType": "LINEAR"
+      },
+      {
+        "parameterName": "ActivationFunc",
+        "type": "CATEGORICAL",
+        "minValue": 0,
+        "maxValue": 0,
+        "feasiblePoints": "Tanh,ReLU",
+        "scalingType": "LINEAR"
+      },
+      {
+        "parameterName": "binningMethod",
+        "type": "CATEGORICAL",
+        "minValue": 0,
+        "maxValue": 0,
+        "feasiblePoints": "EqualPositive,EqualTotal",
+        "scalingType": "LINEAR"
+      },
+      {
+        "parameterName": "filterBy",
+        "type": "CATEGORICAL",
+        "minValue": 0,
+        "maxValue": 0,
+        "feasiblePoints": "KS,IV",
+        "scalingType": "LINEAR"
+      },
+      {
+        "parameterName": "normType",
+        "type": "CATEGORICAL",
+        "minValue": 0,
+        "maxValue": 0,
+        "feasiblePoints": "ZSCALE,WOE_ZSCALE",
+        "scalingType": "LINEAR"
+      }
+    ]
+  }
+}

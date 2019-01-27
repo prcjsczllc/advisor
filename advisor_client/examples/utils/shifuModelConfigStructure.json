@@ -1,0 +1,75 @@
+{
+  "DropoutRate": {
+    "params": "train"
+  },
+  "FeatureSubsetStrategy": {
+    "params": "train"
+  },
+  "Impurity": {
+    "params": "train"
+  },
+  "LearningRate": {
+    "params": "train"
+  },
+  "Loss": "train",
+  "MaxDepth": {
+    "params": "train"
+  },
+  "MinInfoGain": {
+    "params": "train"
+  },
+  "MinInstancesPerNode": {
+    "params": "train"
+  },
+  "TreeNum": {
+    "params": "train"
+  },
+  "ActivationFunc": {
+    "params": "train"
+  },
+   "NumHiddenLayers": {
+    "params": "train"
+  },
+  "NumHiddenNodes": {
+    "params": "train"
+  },
+  "Propagation": {
+    "params": "train"
+  },
+  "RegularizedConstant": {
+    "params": "train"
+  },
+  "algorithm": "train",
+  "autoFilterEnable": "varSelect",
+  "baggingNum": "train",
+  "baggingSampleRate": "train",
+  "baggingWithReplacement": "train",
+  "binningAlgorithm": "stats",
+  "binningMethod": "stats",
+  "candidateColumnNameFile": "varSelect",
+  "cateMaxNumBin": "stats",
+  "correlationThreshold": "varSelect",
+  "customPaths": "train",
+  "filterBy": "varSelect",
+  "filterEnable": "varSelect",
+  "filterNum": "varSelect",
+  "filterOutRatio": "varSelect",
+  "forceEnable": "varSelect",
+  "forceRemoveColumnNameFile": "varSelect",
+  "forceSelectColumnNameFile": "varSelect",
+  "isContinuous": "train",
+  "maxNumBin": "stats",
+  "minIvThreshold": "varSelect",
+  "minKsThreshold": "varSelect",
+  "missingRateThreshold": "varSelect",
+  "normType": "normalize",
+  "numTrainEpochs": "train",
+  "params": "train",
+  "postCorrelationMetric": "varSelect",
+  "psiColumnName": "stats",
+  "sampleNegOnly": "stats",
+  "sampleRate": "stats",
+  "stdDevCutOff": "normalize",
+  "validSetRate": "train",
+  "workerThreadCount": "train"
+}

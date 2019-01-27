@@ -62,15 +62,10 @@ class RunnerLauncher():
                                        self.run_config_dict["search_space"],
                                        self.run_config_dict["algorithm"])
     #check whether data and metricinfo exists
-    if "data" in self.run_config_dict.keys():
-        dataInfo = self.run_config_dict["data"]
-    else:
-        dataInfo={}
-
-    if "metricInfo" in self.run_config_dict["search_space"].keys():
-        metricInfo = self.run_config_dict["search_space"]["metricInfo"]
-    else:
-        metricInfo={}
+    # if "data" in self.run_config_dict.keys():
+    #     dataInfo = self.run_config_dict["data"]
+    # else:
+    #     dataInfo={}
 
     logging.info("Create study: {}".format(study))
     logging.info("------------------------- Start Study -------------------------")
@@ -91,20 +86,22 @@ class RunnerLauncher():
         for k, v in parameters_dict.items():
           parameter_string += " -{}={}".format(k, v)
 
-        if len(dataInfo)>0:
-          for key,value in dataInfo.items():
-            if key == "train" or key=="evals":
-              for key2,value2 in value.items():
-                parameter_string += " -{}={}".format(key2, value2.encode("utf-8"))
-            elif key == "negTags" or key =="posTags":
-              parameter_string += " -{}={}".format(key, [value[0].encode("utf-8")])
-            else:
-              parameter_string += " -{}={}".format(key,value.encode("utf-8"))
-        if len(metricInfo)>0:
-          parameter_string += " -{}={}".format("metricInfo",metricInfo)
+        # if len(dataInfo)>0:
+        #   for key,value in dataInfo.items():
+        #     if key == "train" or key=="evals":
+        #       for key2,value2 in value.items():
+        #         parameter_string += " -{}={}".format(key2, value2.encode("utf-8"))
+        #     elif key == "negTags" or key =="posTags":
+        #       parameter_string += " -{}={}".format(key, [value[0].encode("utf-8")])
+        #     else:
+        #       parameter_string += " -{}={}".format(key,value.encode("utf-8"))
+        if self.run_config_dict["package"] == "shifu":
+          for k,v in self.run_config_dict["preCalculatedResults"].items():
+            parameter_string += " -{}={}".format(k,v)
+          parameter_string += " -{}={}".format("metricInfo",self.run_config_dict["search_space"]["metricInfo"])
 
         command_string = "{} {} -studyName={} -trialID={}".format(
-            "/home/licliu/advisor/advisor_client/examples/" + self.run_config_dict["package"]+ "/run.py",
+            "python /risk_crm11/licliu/advisor/advisor_client/examples/" + self.run_config_dict["package"]+ "/run.py",
             parameter_string,study.name,trial.id)
 
         logging.info("Run the command: {}".format(command_string))

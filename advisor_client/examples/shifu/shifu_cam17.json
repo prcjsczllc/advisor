@@ -1,0 +1,68 @@
+{
+  "name": "cam17",
+  "algorithm": "BayesianOptimization",
+  "trialNumber": 100,
+  "package": "shifu",
+  "preCalculatedResults":{
+    "useStats" ： "true",
+    "useNormalizedData" : "false",
+    "useVariable" : "true"
+  },
+ "search_space": {
+    "goal": "MAXIMIZE",
+    "metricInfo":"weightedCatchRate,weightedActionRate,0.06",
+    "randomInitTrials": 5,
+    "maxTrials": 5,
+    "maxParallelTrials": 1,
+    "params": [
+      {
+        "parameterName": "LearningRate",
+        "type": "DOUBLE",
+        "minValue": 0.1,
+        "maxValue": 3,
+        "feasiblePoints": "",
+        "scalingType": "LINEAR"
+      },
+      {
+          "parameterName": "numTrainEpochs",
+          "type": "INTEGER",
+          "minValue": 500,
+          "maxValue": 1000,
+          "feasiblePoints": "",
+          "scalingType": "LINEAR"
+      },
+      {
+        "parameterName": "NumHiddenNodes",
+        "type": "INTEGER",
+        "minValue": 20,
+        "maxValue": 50,
+        "feasiblePoints": "",
+        "scalingType": "LINEAR"
+      },
+      {
+        "parameterName": "Propagation",
+        "type": "CATEGORICAL",
+        "minValue": 0,
+        "maxValue": 0,
+        "feasiblePoints": "R,Q",
+        "scalingType": "LINEAR"
+      },
+      {
+        "parameterName": "ActivationFunc",
+        "type": "CATEGORICAL",
+        "minValue": 0,
+        "maxValue": 0,
+        "feasiblePoints": "Tanh,ReLU",
+        "scalingType": "LINEAR"
+      },
+      {
+        "parameterName": "normType",
+        "type": "CATEGORICAL",
+        "minValue": 0,
+        "maxValue": 0,
+        "feasiblePoints": "ZSCALE,WOE_ZSCALE",
+        "scalingType": "LINEAR"
+      }
+    ]
+  }
+}
