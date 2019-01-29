@@ -5,6 +5,7 @@ import subprocess
 #import coloredlogs
 import six
 import getpass
+import socket
 import os
 
 from .abstract_runner import AbstractRunner
@@ -43,7 +44,7 @@ class RunnerLauncher():
   def run(self):
     logging.info("Run with config: {}".format(self.run_config_dict))
     # add endpoint
-    client = AdvisorClient(None)
+    client = AdvisorClient(socket.gethostname())
 
     # TODO: move the logic into local runner
     runner = LocalRunner()

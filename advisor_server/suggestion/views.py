@@ -136,6 +136,8 @@ def v1_study_suggestions(request, study_name):
     study = Study.objects.get(name=study_name)
     trials = Trial.objects.filter(study_name=study_name)
     trials = [trial for trial in trials]
+    #for i, t in enumerate(trials):
+    #  t['seq'] = i + 1
 
     if study.algorithm == "RandomSearch":
       algorithm = RandomSearchAlgorithm()

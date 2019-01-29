@@ -49,7 +49,6 @@
   "candidateColumnNameFile": "varSelect",
   "cateMaxNumBin": "stats",
   "correlationThreshold": "varSelect",
-  "customPaths": "train",
   "filterBy": "varSelect",
   "filterEnable": "varSelect",
   "filterNum": "varSelect",

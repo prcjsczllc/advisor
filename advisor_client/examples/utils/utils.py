@@ -1,27 +1,4 @@
 def readModelConfigStructure():
-    # d = dict()
-    # for key in modelConfig.keys():
-    #     if key == "train":
-    #         for key2, value2 in modelConfig[key].items():
-    #             if key2 == "params":
-    #                 for key3,value3 in value2.items():
-    #                     d[key3]= {key2:0}
-    #                     d[key3][key2] = "train"
-    #                 else:
-    #                     d[key2] = "train"
-    #             else:
-    #                 d[key2] = "train"
-    #     elif key =="normalize":
-    #         for key2 in modelConfig[key].keys():
-    #             d[key2] = "normalize"
-    #     elif key =="stats":
-    #         for key2 in modelConfig[key].keys():
-    #             d[key2] = "stats"
-    #     elif key =="varSelect":
-    #         for key2 in modelConfig[key].keys():
-    #             d[key2] = "varSelect"
-    # d["Loss"]="train"
-    # return d
     return
 
 def trainEvalSplit(inputFilePath, outputPath, testRatio,delimiter):
@@ -48,8 +25,8 @@ def evalMetrics(modelConfig,shifuJobPath,package,metricInfo):
     if package == "shifu":
         subprocess.call(["cd " + shifuJobPath + " && bash shifu eval > eval.log"],shell=True)
         if modelConfig["basic"]["runMode"] <> "LOCAL":
-            subprocess.call(["rm " + shifuJobPath + "/evals/Eval1/EvalPerformance.json"],shell=True )
-            subprocess.call(["cd " + shifuJobPath + "/evals/Eval1/" + " && hadoop fs -get " + str(modelConfig["basic"]["customPaths"])[1:-1] + "ModelSets/" + modelConfig["basic"]["name"] + "/evals/Eval1/EvalPerformance.json ." ],shell=True )
+            subprocess.call(["rm " + shifuJobPath + "/evals/Eval1/EvalPerformance.json"],shell=True)
+            subprocess.call(["hadoop fs -get {1}/{2}/evals/{0}/EvalPerformance.json evals/{0}".format(modelConfig["evals"][0]["name"],modelConfig["basic"]["customPaths"]["hdfsModelSetPath"],modelConfig["basic"]["name"])],shell=True )
         with open(shifuJobPath + "/evals/Eval1/EvalPerformance.json") as f:
             evals = json.loads(f.read())
         if metricInfo == "auc":
@@ -69,19 +46,20 @@ def evalMetrics(modelConfig,shifuJobPath,package,metricInfo):
                         if abs(op["actionRate"] - float(metricInfo.split(",")[2]))<10E-6:
                             metric = op["weightedPrecision"]
         elif metricInfo.split(",")[1]=="weightedActionRate":
+            minDelta = 1
+            binNum = 0
             for op in evals["gains"]:
-                if metricInfo.split(",")[0] == "catchRate":
-                    if abs(op["actionRate"] - float(metricInfo.split(",")[2]))<10E-6:
-                        metric = op["recall"]
-                elif metricInfo.split(",")[0]=="hitRate":
-                        if abs(op["actionRate"] - float(metricInfo.split(",")[2]))<10E-6:
-                            metric = op["precision"]
-                elif metricInfo.split(",")[0]=="weightedCatchRate":
-                        if abs(op["actionRate"] - float(metricInfo.split(",")[2]))<10E-6:
-                            metric = op["weightedRecall"]
-                elif metricInfo.split(",")[0]=="weightedHitRate":
-                        if abs(op["actionRate"] - float(metricInfo.split(",")[2]))<10E-6:
-                            metric = op["weightedPrecision"]
+                if abs(op["weightedActionRate"] - float(metricInfo.split(",")[2]))<minDelta:
+                    minDelta = abs(op["weightedActionRate"] - float(metricInfo.split(",")[2]))
+                    binNum = op["binNum"]
+            if metricInfo.split(",")[0] == "catchRate":
+                metric = evals["gains"][binNum]["recall"]
+            elif metricInfo.split(",")[0]=="hitRate":
+                metric = evals["gains"][binNum]["precision"]
+            elif metricInfo.split(",")[0]=="weightedCatchRate":
+                metric = evals["gains"][binNum]["weightedRecall"]
+            elif metricInfo.split(",")[0]=="weightedHitRate":
+                metric = evals["gains"][binNum]["weightedPrecision"]
     return metric
 
 def setDefaultTuningParams():
