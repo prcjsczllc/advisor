@@ -15,8 +15,8 @@ class AdvisorClient(object):
     if endpoint != None:
       self.endpoint = endpoint
 
-    elif "ADVISOR_ENDPOINT" in os.environ:
-      self.endpoint = os.environ.get("ADVISOR_ENDPOINT")
+    elif "OPTIMIZER_POINT" in os.environ:
+      self.endpoint = os.environ.get("OPTIMIZER_POINT")
 
     else:
       self.endpoint = "http://127.0.0.1:8000"
